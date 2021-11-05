@@ -110,7 +110,7 @@ internal class MoongchiPickerDialog private constructor(
 
 
         loadMediaFileFromStorage(mediaType, MAX_MEDIA_SIZE) {
-            //최근에 수정된 파일이 가장 먼저 보이도록 한다.
+            //most recently modified file comes first
             for (uri in it.reversed()) {
                 addMediaToAdapter(
                     mediaType,

@@ -31,7 +31,8 @@ object BitmapHelper {
         val matrix = Matrix().apply {
             postRotate(degree)
         }
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true) ?: bitmap
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            ?: bitmap
 
     }
 
@@ -74,10 +75,8 @@ object BitmapHelper {
     }
 
     /**
-     * URI부터 비트맵을 뽑아낸다.
-     * 갤러리에서 고른 이미지나 카메라로 찍은 이미지들은
-     * 그대로 ImageView를 통해 보여주기에는 해상도가 너무 높은경우가 많으므로
-     * 적절히 해상도를 낮춰서 뽑는다.
+     * get bitmap from uri.
+     * @param bitmapSize images from gallery or camera app has high resolution. so we can down-sample the image when get bitmap from uri.
      */
     fun getBitmapFromUri(
         uri: Uri,
@@ -152,7 +151,11 @@ object BitmapHelper {
     }
 
 
-    private fun rotateBitmapIfNeeded(contentResolver: ContentResolver, bitmap: Bitmap, uri: Uri): Bitmap {
+    private fun rotateBitmapIfNeeded(
+        contentResolver: ContentResolver,
+        bitmap: Bitmap,
+        uri: Uri
+    ): Bitmap {
         val attr = contentResolver.openInputStream(uri)?.use { inputStream ->
             kotlin.runCatching {
                 ExifInterface(inputStream).getAttributeInt(
@@ -169,7 +172,6 @@ object BitmapHelper {
             else -> bitmap
         }
     }
-
 
 
     private fun putBitmapToCache(uri: Uri, bitmap: Bitmap) {

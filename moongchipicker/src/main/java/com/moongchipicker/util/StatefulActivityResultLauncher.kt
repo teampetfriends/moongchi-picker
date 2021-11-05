@@ -12,7 +12,7 @@ internal open class StatefulActivityResultLauncher<T>(
         if (launchParam != null) {
             activityResultLauncher.launch(launchParam)
         } else {
-            Logger.d("launchParam이 없습니다")
+            Logger.d("cannot launch [StatefulActivityResultLauncher] : launchParam is null")
         }
     }
 }

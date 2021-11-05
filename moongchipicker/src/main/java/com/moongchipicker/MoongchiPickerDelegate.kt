@@ -12,30 +12,27 @@ enum class PetMediaType : Serializable {
 }
 
 /**
- * 권한을 얻기, 사진이나 동영상 촬영, 갤러리에서 미디어 가져오기, [MoongchiPickerDialog] 열기 등
- * [MoongchiPickerDelegate]의 세부적인 구현을 모아놓은 클래스
- * 비디오 여러개 선택은 지원 예정
+ * this class contains every detail of MoongchiPicker
  */
 internal class MoongchiPickerDelegate(
     private val activity: AppCompatActivity
 ) {
 
     /**
-     *   * Note: context을 이용해 파일을 사진, 동영상을 저장할 임시파일을 만들기 때문에 onCreate에서 불려야한다.
-     * @param maxImageCountBuilder : [mediaType]이 [PetMediaType.IMAGE] 일시, 선택할 수 있는 이미지 수.
-     * @return [MoongchiPickerDialog] 를 열 수 있는 리퀘스트런처
+     * this method should called on [AppCompatActivity.onCreate]
+     * @return [MoongchiPickerDialogListener] has to be set on [MoongchiPickerDialog]
      */
     fun registerMediaPickRequest(
         mediaType: PetMediaType,
         isAllowMultiple: Boolean,
-        maxImageCountBuilder: () -> Int,
+        maxMediaCountBuilder: () -> Int,
         moongchiPickerListener: MoongchiPickerListener
     ): MoongchiPickerDialogListener {
         val cameraRequest = registerCameraRequest(mediaType, moongchiPickerListener)
         val galleryRequest = registerPickFromGalleryRequest(
             mediaType,
             isAllowMultiple,
-            maxImageCountBuilder,
+            maxMediaCountBuilder,
             moongchiPickerListener
         )
 

@@ -2,6 +2,7 @@ package com.moongchipicker
 
 import android.Manifest
 import android.net.Uri
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.moongchipicker.util.registerPermissionRequestLauncher
 import com.moongchipicker.util.toDebugString
@@ -11,8 +12,8 @@ interface MoongchiPickerListener {
     fun onFailed(t: Throwable)
 
     /**
-     * 사용자가 갤러리를 통해 선택한 미디어의 갯수가
-     * [MoongchiPicker] 에서 지정한 갯수보다 클때 불린다.
+     * called when user select media over limit from gallery
+     * @see [MoongchiPicker]
      */
     fun onSelectedMediaCountOverLimit(limit: Int) {
 
@@ -22,13 +23,17 @@ interface MoongchiPickerListener {
 
 /**
  * this class must created on [AppCompatActivity.onCreate]
+ * @param activity activity to register [ActivityResultContracts] that MoonchiPicker need
+ * @param allowPermissionRequest allow to request permissions for reading and writing media
+ * @param allowMultiple allow to pick multiple media from gallery
+ * @param maxMediaCountBuilder builder for build max selection count for fetching media from gallery
  */
 class MoongchiPicker(
     activity: AppCompatActivity,
-    isAutoPermission: Boolean = false,
+    allowPermissionRequest: Boolean = false,
     mediaType: PetMediaType,
-    isAllowMultiple: Boolean = false,
-    maxImageCountBuilder: () -> Int = { 1 },
+    allowMultiple: Boolean = false,
+    maxMediaCountBuilder: () -> Int = { 1 },
     moongchiPickerListener: MoongchiPickerListener
 ) {
 
@@ -38,8 +43,8 @@ class MoongchiPicker(
 
         val moongchiPickerDialogListener = MoongchiPickerDelegate(activity).registerMediaPickRequest(
             mediaType,
-            isAllowMultiple,
-            maxImageCountBuilder,
+            allowMultiple,
+            maxMediaCountBuilder,
             moongchiPickerListener
         )
 
@@ -47,7 +52,7 @@ class MoongchiPicker(
             return MoongchiPickerDialog.newInstance(
                 mediaType,
                 moongchiPickerDialogListener,
-                maxImageCountBuilder()
+                maxMediaCountBuilder()
             )
         }
 
@@ -68,7 +73,7 @@ class MoongchiPicker(
             return { launcher.launch() }
         }
 
-        request = if (isAutoPermission) {
+        request = if (allowPermissionRequest) {
             getMoongchiPickerWithAutoPermissionLauncher()
         } else {
             { createMoongchiPickerDialog().show(activity.supportFragmentManager, null) }

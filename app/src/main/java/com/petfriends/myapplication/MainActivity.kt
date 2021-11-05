@@ -19,9 +19,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val moongchiPicker = MoongchiPicker(this,
+        val moongchiPicker = MoongchiPicker(
+            this,
             mediaType = PetMediaType.IMAGE,
-            isAutoPermission = true,
+            allowPermissionRequest = true,
             moongchiPickerListener = object : MoongchiPickerListener{
                 override fun onSubmitMedia(contentUris: List<Uri>) {
                     if(contentUris.isEmpty()){

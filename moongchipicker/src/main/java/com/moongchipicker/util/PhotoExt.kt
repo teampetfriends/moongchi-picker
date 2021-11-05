@@ -16,7 +16,8 @@ import kotlin.math.min
 
 
 /**
- * context를 이용해서 파일을 만들기 때문에 onCreate에서 불려야한다.
+ * this method should called on [AppCompatActivity.onCreate]
+ * because this method create file from context and use [AppCompatActivity.registerForActivityResult]
  */
 internal fun AppCompatActivity.registerTakePictureLauncher(
     onSuccess: (fileUri: Uri) -> Unit,
@@ -76,14 +77,14 @@ internal fun Context.createVideoFilePrivate(
 }
 
 /**
- * uri 정렬기준 : File 수정일 오름차순
+ * @return uri is sorted ascending order base on modified date
  */
 internal suspend fun Context.loadVideosFromInternalStorage(maxFileCount: Int): List<Uri> {
     return loadFilesFromInternalStorage(".mp4", maxFileCount)
 }
 
 /**
- * uri 정렬기준 : File 수정일 오름차순
+ * @return uri is sorted ascending order base on modified date
  */
 internal suspend fun Context.loadImagesFromInternalStorage(maxFileCount: Int): List<Uri> {
     return loadFilesFromInternalStorage(".jpg", maxFileCount)
@@ -91,8 +92,8 @@ internal suspend fun Context.loadImagesFromInternalStorage(maxFileCount: Int): L
 
 
 /**
- * uri 정렬기준 : File 수정일 오름차순
  * @param format : ex ) ".jpg", ".png"
+ * @return uri is sorted ascending order base on modified date
  */
 private suspend fun Context.loadFilesFromInternalStorage(
     format: String,
@@ -111,7 +112,7 @@ private suspend fun Context.loadFilesFromInternalStorage(
 }
 
 /**
- * uri 정렬기준 : File 수정일 오름차순
+ * @return uri is sorted ascending order base on modified date
  */
 internal suspend fun Context.loadVideosFromExternalStorage(maxFileCount: Int): List<Uri> {
     return withContext(Dispatchers.IO) {
@@ -147,7 +148,7 @@ internal suspend fun Context.loadVideosFromExternalStorage(maxFileCount: Int): L
 }
 
 /**
- * uri 정렬기준 : File 수정일 오름차순
+ * @return uri is sorted ascending order base on modified date
  */
 internal suspend fun Context.loadImagesFromExternalStorage(maxFileCount: Int): List<Uri> {
     return withContext(Dispatchers.IO) {

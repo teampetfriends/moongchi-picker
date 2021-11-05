@@ -20,8 +20,8 @@ internal interface MediaItemClickListener {
     fun onClickGallery()
 
     /**
-     * [MoongchiPickerRecyclerViewAdapter]의
-     * [MoongchiPickerRecyclerViewAdapter.maxImageCount]가 1 일시, 사진을 누르자마자 submit한다.
+     *  when [MoongchiPickerRecyclerViewAdapter.maxImageCount] is 1, then once user click media tile
+     *  the uri submitted immediately
      */
     fun onSubmit(uri: Uri)
 }
@@ -34,7 +34,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
     private val onMediaItemClickListener: MediaItemClickListener
 ) : RecyclerView.Adapter<MoongchiPickerRecyclerViewAdapter.ViewHolder>() {
 
-    //Photo.empty()는 카메라, 갤러리를 위한 빈공간을 가지기 위해 사용
+    //Photo.empty() is placeholder for camera, gallery tile
     private var photos = mutableListOf(Photo.empty(), Photo.empty())
 
     class ViewHolder(val binding: ItemMediaBinding) : RecyclerView.ViewHolder(binding.root)
@@ -128,22 +128,19 @@ internal class MoongchiPickerRecyclerViewAdapter(
                         onMediaItemClickListener.onSubmit(currentPhoto.uri)
                         return@setOnClickListener
                     }
-                    //이미 선택되어있는 사진을 클릭시에 selectedPhotos 에서 그 사진을 제거한다.
-                    //Note : selectedPhotos는 liveData이기 때문에 단순히 add 로는 이벤트를 발생시키지 않는다.
-                    //따라서 리스트를 새로 만들어서 넣어준다.
+                    //when user click selected tile, then tile should removed from selectedPhotos
                      if (selectedPhotos.value?.contains(currentPhoto).toSafe()) {
                         selectedPhotos.value = selectedPhotos.value.toSafe().toMutableList()
                             .apply { remove(currentPhoto) }
 
                         notifyItemChanged(position)
                     } else {
-                        //아니면 선택된 된 사진을 selectedPhotos에 추가한다.
                         if (selectedPhotos.value?.size.toSafe() < maxImageCount) {
                             selectedPhotos.value = selectedPhotos.value.toSafe().toMutableList()
                                 .apply { add(currentPhoto) }
                             notifyItemChanged(position)
                         }
-                        //허용 이미지 갯수를 넘은 경우
+                        //when user select media over limit
                         else {
                             Toast.makeText(
                                 context,
