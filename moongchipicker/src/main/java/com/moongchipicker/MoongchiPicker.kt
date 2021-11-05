@@ -56,7 +56,7 @@ class MoongchiPicker(
             )
         }
 
-        fun getMoongchiPickerWithAutoPermissionLauncher(): () -> Unit {
+        fun createShowMoochiPickerWithPermissionDelegate(): () -> Unit {
             val mediaPermissions = arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -74,7 +74,7 @@ class MoongchiPicker(
         }
 
         request = if (allowPermissionRequest) {
-            getMoongchiPickerWithAutoPermissionLauncher()
+            createShowMoochiPickerWithPermissionDelegate()
         } else {
             { createMoongchiPickerDialog().show(activity.supportFragmentManager, null) }
         }
