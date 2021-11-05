@@ -6,13 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.moongchipicker.util.registerPermissionRequestLauncher
 import com.moongchipicker.util.toDebugString
 
-interface MediaPickerListener {
+interface MoongchiPickerListener {
     fun onSubmitMedia(contentUris: List<Uri>)
     fun onFailed(t: Throwable)
 
     /**
      * 사용자가 갤러리를 통해 선택한 미디어의 갯수가
-     * [MediaPickerDelegate.registerMediaPickerRequestWithPermission] 에서 지정한 갯수보다 클때 불린다.
+     * [MoongchiPicker] 에서 지정한 갯수보다 클때 불린다.
      */
     fun onSelectedMediaCountOverLimit(limit: Int) {
 
@@ -23,35 +23,35 @@ interface MediaPickerListener {
 /**
  * this class must created on [AppCompatActivity.onCreate]
  */
-class MediaPicker(
+class MoongchiPicker(
     activity: AppCompatActivity,
     isAutoPermission: Boolean = false,
     mediaType: PetMediaType,
     isAllowMultiple: Boolean = false,
     maxImageCountBuilder: () -> Int = { 1 },
-    mediaPickerListener: MediaPickerListener
+    moongchiPickerListener: MoongchiPickerListener
 ) {
 
     private val request: () -> Unit
 
     init {
 
-        val mediaPickerDialogListener = MediaPickerDelegate(activity).registerMediaPickRequest(
+        val moongchiPickerDialogListener = MoongchiPickerDelegate(activity).registerMediaPickRequest(
             mediaType,
             isAllowMultiple,
             maxImageCountBuilder,
-            mediaPickerListener
+            moongchiPickerListener
         )
 
-        fun createMediaPickerDialog(): MediaPickerDialog {
-            return MediaPickerDialog.newInstance(
+        fun createMoongchiPickerDialog(): MoongchiPickerDialog {
+            return MoongchiPickerDialog.newInstance(
                 mediaType,
-                mediaPickerDialogListener,
+                moongchiPickerDialogListener,
                 maxImageCountBuilder()
             )
         }
 
-        fun getMediaPickerWithAutoPermissionLauncher(): () -> Unit {
+        fun getMoongchiPickerWithAutoPermissionLauncher(): () -> Unit {
             val mediaPermissions = arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -59,19 +59,19 @@ class MediaPicker(
             val launcher = activity.registerPermissionRequestLauncher(
                 permissionsToRequest = mediaPermissions,
                 onPermissionGranted = {
-                    createMediaPickerDialog().show(activity.supportFragmentManager, null)
+                    createMoongchiPickerDialog().show(activity.supportFragmentManager, null)
                 },
                 withDeniedPermissions = {
-                    mediaPickerListener.onFailed(Throwable("permission denied : ${it.toDebugString()}"))
+                    moongchiPickerListener.onFailed(Throwable("permission denied : ${it.toDebugString()}"))
                 }
                 )
             return { launcher.launch() }
         }
 
         request = if (isAutoPermission) {
-            getMediaPickerWithAutoPermissionLauncher()
+            getMoongchiPickerWithAutoPermissionLauncher()
         } else {
-            { createMediaPickerDialog().show(activity.supportFragmentManager, null) }
+            { createMoongchiPickerDialog().show(activity.supportFragmentManager, null) }
         }
     }
 

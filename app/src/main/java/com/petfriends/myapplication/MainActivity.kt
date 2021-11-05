@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.databinding.DataBindingUtil
-import com.moongchipicker.MediaPicker
-import com.moongchipicker.MediaPickerListener
+import com.moongchipicker.MoongchiPicker
+import com.moongchipicker.MoongchiPickerListener
 import com.moongchipicker.PetMediaType
 import com.moongchipicker.util.BitmapHelper
 import com.petfriends.myapplication.databinding.ActivityMainBinding
@@ -19,10 +19,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mediaPicker = MediaPicker(this,
+        val moongchiPicker = MoongchiPicker(this,
             mediaType = PetMediaType.IMAGE,
             isAutoPermission = true,
-            mediaPickerListener = object : MediaPickerListener{
+            moongchiPickerListener = object : MoongchiPickerListener{
                 override fun onSubmitMedia(contentUris: List<Uri>) {
                     if(contentUris.isEmpty()){
                         return
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             })
 
         binding.iv.setOnClickListener {
-            mediaPicker.show()
+            moongchiPicker.show()
         }
 
     }

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.*
 import com.moongchipicker.data.Photo
-import com.moongchipicker.databinding.DialogMediaPickerBinding
+import com.moongchipicker.databinding.DialogMoongchiPickerBinding
 import com.moongchipicker.databinding.ItemSelectedMediaBinding
 import com.moongchipicker.util.*
 import kotlinx.coroutines.Dispatchers
@@ -23,17 +23,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.Serializable
 
-internal interface MediaPickerDialogListener : Serializable {
+internal interface MoongchiPickerDialogListener : Serializable {
     fun onSubmitMedia(uris: List<Uri>)
     fun onClickCamera()
     fun onClickGallery()
 }
 
-internal class MediaPickerDialog private constructor(
+internal class MoongchiPickerDialog private constructor(
 ) : BottomSheetDialogFragment() {
 
-    private val binding: DialogMediaPickerBinding by lazy {
-        DialogMediaPickerBinding.inflate(layoutInflater)
+    private val binding: DialogMoongchiPickerBinding by lazy {
+        DialogMoongchiPickerBinding.inflate(layoutInflater)
     }
 
     override fun onCreateView(
@@ -41,7 +41,7 @@ internal class MediaPickerDialog private constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding.recyclerMediaPicker.layoutManager =
+        binding.recyclerMoongchiPicker.layoutManager =
             GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
         return binding.root
     }
@@ -50,8 +50,8 @@ internal class MediaPickerDialog private constructor(
         super.onViewCreated(view, savedInstanceState)
 
 
-        val mediaPickerListener =
-            arguments?.getSerializable(EXTRA_MEDIA_PICKER_LISTENER) as? MediaPickerDialogListener ?: return
+        val moongchiPickerListener =
+            arguments?.getSerializable(EXTRA_MEDIA_PICKER_LISTENER) as? MoongchiPickerDialogListener ?: return
         val maxImageCount = arguments?.getInt(EXTRA_MAX_IMAGE_COUNT) ?: 1
         val mediaType = arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: return
 
@@ -66,28 +66,28 @@ internal class MediaPickerDialog private constructor(
 
 
         val selectedPhotos = MutableLiveData<MutableList<Photo>>(mutableListOf())
-        val mediaItemRecyclerViewAdapter = MediaPickerRecyclerViewAdapter(
+        val mediaItemRecyclerViewAdapter = MoongchiPickerRecyclerViewAdapter(
             maxImageCount,
             selectedPhotos,
             viewLifecycleOwner,
             object : MediaItemClickListener {
                 override fun onClickCamera() {
-                    mediaPickerListener.onClickCamera()
+                    moongchiPickerListener.onClickCamera()
                     dismiss()
                 }
 
                 override fun onClickGallery() {
-                    mediaPickerListener.onClickGallery()
+                    moongchiPickerListener.onClickGallery()
                     dismiss()
                 }
 
                 override fun onSubmit(uri: Uri) {
-                    mediaPickerListener.onSubmitMedia(listOf(uri))
+                    moongchiPickerListener.onSubmitMedia(listOf(uri))
                     dismiss()
                 }
             })
 
-        binding.recyclerMediaPicker.adapter = mediaItemRecyclerViewAdapter
+        binding.recyclerMoongchiPicker.adapter = mediaItemRecyclerViewAdapter
 
 
         selectedPhotos.observe(this, Observer {
@@ -104,7 +104,7 @@ internal class MediaPickerDialog private constructor(
         })
 
         binding.submit.setOnClickListener {
-            mediaPickerListener.onSubmitMedia(selectedPhotos.value?.map { it.uri }.toSafe())
+            moongchiPickerListener.onSubmitMedia(selectedPhotos.value?.map { it.uri }.toSafe())
             dismiss()
         }
 
@@ -205,12 +205,12 @@ internal class MediaPickerDialog private constructor(
         mediaType: PetMediaType,
         contentResolver: ContentResolver,
         uri: Uri,
-        mediaItemAdapter: MediaPickerRecyclerViewAdapter
+        moongchiItemAdapter: MoongchiPickerRecyclerViewAdapter
     ) {
         withContext(Dispatchers.IO) {
             val bitmap = getMediaBitmap(mediaType, contentResolver, uri) ?: return@withContext
             withContext(Dispatchers.Main) {
-                mediaItemAdapter.addPhoto(Photo(uri, bitmap))
+                moongchiItemAdapter.addPhoto(Photo(uri, bitmap))
             }
         }
     }
@@ -225,14 +225,14 @@ internal class MediaPickerDialog private constructor(
 
         fun newInstance(
             mediaType: PetMediaType,
-            mediaPickerDialogListener: MediaPickerDialogListener,
+            moongchiPickerDialogListener: MoongchiPickerDialogListener,
             maxImageCount: Int = 1
-        ): MediaPickerDialog {
+        ): MoongchiPickerDialog {
             val args = Bundle()
             args.putInt(EXTRA_MAX_IMAGE_COUNT, maxImageCount)
-            args.putSerializable(EXTRA_MEDIA_PICKER_LISTENER, mediaPickerDialogListener)
+            args.putSerializable(EXTRA_MEDIA_PICKER_LISTENER, moongchiPickerDialogListener)
             args.putSerializable(EXTRA_MEDIA_TYPE, mediaType)
-            val fragment = MediaPickerDialog()
+            val fragment = MoongchiPickerDialog()
             fragment.arguments = args
             return fragment
         }

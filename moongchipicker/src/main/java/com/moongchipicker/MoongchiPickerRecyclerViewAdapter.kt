@@ -20,19 +20,19 @@ internal interface MediaItemClickListener {
     fun onClickGallery()
 
     /**
-     * [MediaPickerRecyclerViewAdapter]의
-     * [MediaPickerRecyclerViewAdapter.maxImageCount]가 1 일시, 사진을 누르자마자 submit한다.
+     * [MoongchiPickerRecyclerViewAdapter]의
+     * [MoongchiPickerRecyclerViewAdapter.maxImageCount]가 1 일시, 사진을 누르자마자 submit한다.
      */
     fun onSubmit(uri: Uri)
 }
 
 
-internal class MediaPickerRecyclerViewAdapter(
+internal class MoongchiPickerRecyclerViewAdapter(
     private val maxImageCount: Int = 1,
     private val selectedPhotos: MutableLiveData<MutableList<Photo>>,
     lifecycleOwner: LifecycleOwner,
     private val onMediaItemClickListener: MediaItemClickListener
-) : RecyclerView.Adapter<MediaPickerRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<MoongchiPickerRecyclerViewAdapter.ViewHolder>() {
 
     //Photo.empty()는 카메라, 갤러리를 위한 빈공간을 가지기 위해 사용
     private var photos = mutableListOf(Photo.empty(), Photo.empty())

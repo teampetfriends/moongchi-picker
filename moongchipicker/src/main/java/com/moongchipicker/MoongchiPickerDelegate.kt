@@ -12,36 +12,36 @@ enum class PetMediaType : Serializable {
 }
 
 /**
- * 권한을 얻기, 사진이나 동영상 촬영, 갤러리에서 미디어 가져오기, MediaPickerDialog 열기 등
- * MediaPicker의 세부적인 구현을 모아놓은 클래스
+ * 권한을 얻기, 사진이나 동영상 촬영, 갤러리에서 미디어 가져오기, [MoongchiPickerDialog] 열기 등
+ * [MoongchiPickerDelegate]의 세부적인 구현을 모아놓은 클래스
  * 비디오 여러개 선택은 지원 예정
  */
-internal class MediaPickerDelegate(
+internal class MoongchiPickerDelegate(
     private val activity: AppCompatActivity
 ) {
 
     /**
      *   * Note: context을 이용해 파일을 사진, 동영상을 저장할 임시파일을 만들기 때문에 onCreate에서 불려야한다.
      * @param maxImageCountBuilder : [mediaType]이 [PetMediaType.IMAGE] 일시, 선택할 수 있는 이미지 수.
-     * @return [MediaPickerDialog] 를 열 수 있는 리퀘스트런처
+     * @return [MoongchiPickerDialog] 를 열 수 있는 리퀘스트런처
      */
     fun registerMediaPickRequest(
         mediaType: PetMediaType,
         isAllowMultiple: Boolean,
         maxImageCountBuilder: () -> Int,
-        mediaPickerListener: MediaPickerListener
-    ): MediaPickerDialogListener {
-        val cameraRequest = registerCameraRequest(mediaType, mediaPickerListener)
+        moongchiPickerListener: MoongchiPickerListener
+    ): MoongchiPickerDialogListener {
+        val cameraRequest = registerCameraRequest(mediaType, moongchiPickerListener)
         val galleryRequest = registerPickFromGalleryRequest(
             mediaType,
             isAllowMultiple,
             maxImageCountBuilder,
-            mediaPickerListener
+            moongchiPickerListener
         )
 
-        return object : MediaPickerDialogListener {
+        return object : MoongchiPickerDialogListener {
             override fun onSubmitMedia(uris: List<Uri>) {
-                mediaPickerListener.onSubmitMedia(uris)
+                moongchiPickerListener.onSubmitMedia(uris)
             }
 
             override fun onClickCamera() {
@@ -57,19 +57,19 @@ internal class MediaPickerDelegate(
 
     private fun registerCameraRequest(
         mediaType: PetMediaType,
-        mediaPickerListener: MediaPickerListener
+        moongchiPickerListener: MoongchiPickerListener
     ): StatefulActivityResultLauncher<Uri> {
         return when (mediaType) {
             PetMediaType.IMAGE -> {
                 registerTakePictureRequest(
-                    onSuccess = { mediaPickerListener.onSubmitMedia(listOf(it)) },
-                    onFailed = { mediaPickerListener.onFailed(it) }
+                    onSuccess = { moongchiPickerListener.onSubmitMedia(listOf(it)) },
+                    onFailed = { moongchiPickerListener.onFailed(it) }
                 )
             }
             PetMediaType.VIDEO -> {
                 registerTakeVideoRequest(
-                    onSuccess = { mediaPickerListener.onSubmitMedia(listOf(it)) },
-                    onFailed = { mediaPickerListener.onFailed(it) }
+                    onSuccess = { moongchiPickerListener.onSubmitMedia(listOf(it)) },
+                    onFailed = { moongchiPickerListener.onFailed(it) }
                 )
             }
         }
@@ -79,7 +79,7 @@ internal class MediaPickerDelegate(
         mediaType: PetMediaType,
         isMultipleImage: Boolean = false,
         maxImageCountBuilder: () -> Int,
-        mediaPickerListener: MediaPickerListener
+        moongchiPickerListener: MoongchiPickerListener
     ): StatefulActivityResultLauncher<String> {
         return when (mediaType) {
             PetMediaType.IMAGE -> {
@@ -88,27 +88,27 @@ internal class MediaPickerDelegate(
                         onSuccess = {
                             val maxImageCount = maxImageCountBuilder()
                             if (it.size > maxImageCount) {
-                                mediaPickerListener.onSelectedMediaCountOverLimit(
+                                moongchiPickerListener.onSelectedMediaCountOverLimit(
                                     maxImageCount
                                 )
                             }
-                            mediaPickerListener.onSubmitMedia(
+                            moongchiPickerListener.onSubmitMedia(
                                 it.subList(0, min(it.size, maxImageCount))
                             )
                         },
-                        onFailed = { mediaPickerListener.onFailed(it) }
+                        onFailed = { moongchiPickerListener.onFailed(it) }
                     )
                 } else {
                     createPickPictureFromGalleryRequest(
-                        onSuccess = { mediaPickerListener.onSubmitMedia(listOf(it)) },
-                        onFailed = { mediaPickerListener.onFailed(it) }
+                        onSuccess = { moongchiPickerListener.onSubmitMedia(listOf(it)) },
+                        onFailed = { moongchiPickerListener.onFailed(it) }
                     )
                 }
             }
             PetMediaType.VIDEO -> {
                 createPickVideoFromGallery(
-                    onSuccess = { mediaPickerListener.onSubmitMedia(listOf(it)) },
-                    onFailed = { mediaPickerListener.onFailed(it) }
+                    onSuccess = { moongchiPickerListener.onSubmitMedia(listOf(it)) },
+                    onFailed = { moongchiPickerListener.onFailed(it) }
                 )
             }
         }
