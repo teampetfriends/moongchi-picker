@@ -46,7 +46,7 @@ android {
                     from components.release
 
                     // You can then customize attributes of the publication as shown below.
-                    groupId = 'com.github.bsw112'
+                    groupId = 'com.github.teampetfriends'
                     artifactId = 'final'
                     version = '1.0.1'
                 }
@@ -55,7 +55,7 @@ android {
                     // Applies the component for the debug build variant.
                     from components.debug
 
-                    groupId = 'com.github.bsw112'
+                    groupId = 'com.github.teampetfriends'
                     artifactId = 'final-debug'
                     version = '1.0.1'
                 }
