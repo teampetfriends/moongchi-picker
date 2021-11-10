@@ -2,8 +2,9 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-kapt'
-
+    id 'maven-publish'
 }
+
 
 android {
     compileSdk 31
@@ -34,6 +35,32 @@ android {
 
     dataBinding {
         enabled = true
+    }
+
+    afterEvaluate {
+        publishing {
+            publications {
+                // Creates a Maven publication called "release".
+                release(MavenPublication) {
+                    // Applies the component for the release build variant.
+                    from components.release
+
+                    // You can then customize attributes of the publication as shown below.
+                    groupId = 'com.github.bsw112'
+                    artifactId = 'final'
+                    version = '1.0'
+                }
+                // Creates a Maven publication called “debug”.
+                debug(MavenPublication) {
+                    // Applies the component for the debug build variant.
+                    from components.debug
+
+                    groupId = 'com.github.bsw112'
+                    artifactId = 'final-debug'
+                    version = '1.0'
+                }
+            }
+        }
     }
 }
 
