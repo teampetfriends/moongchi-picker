@@ -48,7 +48,7 @@ android {
                     // You can then customize attributes of the publication as shown below.
                     groupId = 'com.github.bsw112'
                     artifactId = 'final'
-                    version = '1.0'
+                    version = '1.0.1'
                 }
                 // Creates a Maven publication called “debug”.
                 debug(MavenPublication) {
@@ -57,7 +57,7 @@ android {
 
                     groupId = 'com.github.bsw112'
                     artifactId = 'final-debug'
-                    version = '1.0'
+                    version = '1.0.1'
                 }
             }
         }
