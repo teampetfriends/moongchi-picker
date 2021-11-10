@@ -6,10 +6,11 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 
 /**
- * [ActivityResultContracts.TakeVideo] 가 동영상 저장에 성공해도 갤럭시폰에서 intent를 null을 리턴하기에
- * 커스텀 Contract를 작성
+ * [ActivityResultContracts.TakeVideo.parseResult] always returns null.
+ * so we use this custom ActivityResultContract
  */
 internal class TakeVideoContract : ActivityResultContract<Uri, Boolean>() {
 

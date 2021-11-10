@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">moongchipicker</string>
+    <string name="media_picker_title">@string/pick_image</string>
+    <string name="pick_image">사진을 선택하세요</string>
+    <string name="pick_video">영상을 선택하세요</string>
+    <string name="media_picker_submit">완료</string>
+    <string name="media_picker_no_media">선택된 항목이 없습니다</string>
+</resources>
