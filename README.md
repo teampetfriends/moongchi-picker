@@ -1,4 +1,3 @@
-# moongchi-picker
 [![](https://jitpack.io/v/teampetfriends/moongchi-picker.svg)](https://jitpack.io/#teampetfriends/moongchi-picker)
 > This is only experimental version of MoongchiPicker. It will change a lot later.
 <br/><br/>
