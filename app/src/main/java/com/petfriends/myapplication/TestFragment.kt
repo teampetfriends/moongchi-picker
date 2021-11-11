@@ -18,7 +18,7 @@ class TestFragment : Fragment(R.layout.fragment_test) {
         val picker = createMoongchiPicker(
             mediaType = PetMediaType.VIDEO,
             allowPermissionRequest = true,
-            allowMultiple = true,
+            allowMultiple = false,
             maxMediaCountBuilder = { 5 },
             moongchiPickerListener = object : MoongchiPickerListener {
                 override fun onSubmitMedia(contentUris: List<Uri>) {

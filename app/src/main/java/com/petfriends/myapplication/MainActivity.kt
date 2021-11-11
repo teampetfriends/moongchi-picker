@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         val moongchiPicker = createMoongchiPicker(
             mediaType = PetMediaType.IMAGE,
             allowPermissionRequest = true,
-            allowMultiple = true,
+            allowMultiple = false,
             maxMediaCountBuilder = { 5 },
             maxVisibleMediaCount = 3,
             moongchiPickerListener = object : MoongchiPickerListener{
