@@ -1,7 +1,5 @@
 package com.moongchipicker
 
-import android.content.ContentResolver
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.moongchipicker.*
 import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
 import com.moongchipicker.databinding.ItemSelectedMediaBinding
@@ -66,10 +63,10 @@ internal class MoongchiPickerDialog private constructor(
         }
 
 
-        val selectedPhotos = MutableLiveData<MutableList<Media>>(mutableListOf())
+        val selectedMediaList = MutableLiveData<MutableList<Media>>(mutableListOf())
         val mediaItemRecyclerViewAdapter = MoongchiPickerRecyclerViewAdapter(
             maxSelectableMediaCount,
-            selectedPhotos,
+            selectedMediaList,
             viewLifecycleOwner,
             object : MediaItemClickListener {
                 override fun onClickCamera() {
@@ -91,21 +88,21 @@ internal class MoongchiPickerDialog private constructor(
         binding.recyclerMoongchiPicker.adapter = mediaItemRecyclerViewAdapter
 
 
-        selectedPhotos.observe(this, Observer {
+        selectedMediaList.observe(this, Observer {
             if (it.size > 0) {
                 binding.selectedMediaPlaceholder.visibility = View.INVISIBLE
             } else {
                 binding.selectedMediaPlaceholder.visibility = View.VISIBLE
             }
 
-            updateSelectedImageLayout(it) { deselectedPhoto ->
-                selectedPhotos.value =
-                    selectedPhotos.value.toSafe().toMutableList().apply { remove(deselectedPhoto) }
+            updateSelectedImageLayout(it) { deselectedMedia ->
+                selectedMediaList.value =
+                    selectedMediaList.value.toSafe().toMutableList().apply { remove(deselectedMedia) }
             }
         })
 
         binding.submit.setOnClickListener {
-            moongchiPickerListener.onSubmitMedia(selectedPhotos.value?.map { it.uri }.toSafe())
+            moongchiPickerListener.onSubmitMedia(selectedMediaList.value?.map { it.uri }.toSafe())
             dismiss()
         }
 
@@ -124,15 +121,15 @@ internal class MoongchiPickerDialog private constructor(
     }
 
 
-    private fun updateSelectedImageLayout(media: List<Media>, onDeselect: (Media) -> Unit) {
+    private fun updateSelectedImageLayout(mediaList: List<Media>, onDeselect: (Media) -> Unit) {
         binding.selectedMedia.removeAllViews()
-        for (photo in media) {
+        for (media in mediaList) {
             val itemBinding =
                 ItemSelectedMediaBinding.inflate(layoutInflater, binding.selectedMedia, false)
-            itemBinding.media.setImageBitmap(photo.getBitmap(requireContext()))
+            itemBinding.media.setImageBitmap(media.getBitmap(requireContext()))
             binding.selectedMedia.addView(itemBinding.root)
             itemBinding.remove.setOnClickListener {
-                onDeselect(photo)
+                onDeselect(media)
             }
         }
     }
@@ -189,7 +186,7 @@ internal class MoongchiPickerDialog private constructor(
     ) {
         withContext(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
-                moongchiItemAdapter.addPhoto(Media(uri, mediaType))
+                moongchiItemAdapter.addMedia(Media(uri, mediaType))
             }
         }
     }
