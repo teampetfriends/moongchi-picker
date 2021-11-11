@@ -144,7 +144,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                         else {
                             Toast.makeText(
                                 context,
-                                "더이상 이미지를 추가할 수 없어요!",
+                                context.getString(R.string.err_select_over_limit),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
