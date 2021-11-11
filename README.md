@@ -51,6 +51,8 @@ dependencyResolutionManagement {
 <br/><br/>
 ## How to use
 
+> MoongchiPicker must be created on **onCreate** of activity lifecycle. Because it uses context to load file from storage, and use registerForActivityResult which is must be called before onStart
+
 Due to MoongchiPicker use registerForActivityResult, you have to pass AppCompatActivity as argument.
 And let MoongchiPicker know what media type you want to pick.
 You don't need to check permission if you give **allowPermissionRequest** option true to moongchiPicker.
@@ -109,3 +111,4 @@ And there is callback called when user picks media from gallery if user pick ite
   	// do something like showing warning dialog
   }
 ```
+
