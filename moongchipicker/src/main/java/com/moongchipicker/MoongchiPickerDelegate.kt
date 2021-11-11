@@ -1,9 +1,13 @@
 package com.moongchipicker
 
 import android.net.Uri
+import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.moongchipicker.util.*
+import com.moongchipicker.util.StatefulActivityResultLauncher
+import com.moongchipicker.util.registerTakePictureLauncher
+import com.moongchipicker.util.registerTakeVideoLauncher
+import com.moongchipicker.util.toStatefulActivityResultLauncher
 import java.io.Serializable
 import kotlin.math.min
 
@@ -15,7 +19,7 @@ enum class PetMediaType : Serializable {
  * this class contains every detail of MoongchiPicker
  */
 internal class MoongchiPickerDelegate(
-    private val activity: AppCompatActivity
+    private val activity: ComponentActivity
 ) {
 
     /**

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -19,7 +20,7 @@ import kotlin.math.min
  * this method should called on [AppCompatActivity.onCreate]
  * because this method create file from context and use [AppCompatActivity.registerForActivityResult]
  */
-internal fun AppCompatActivity.registerTakePictureLauncher(
+internal fun ComponentActivity.registerTakePictureLauncher(
     onSuccess: (fileUri: Uri) -> Unit,
     onFailed: (Throwable) -> Unit
 ): StatefulActivityResultLauncher<Uri> {
@@ -35,7 +36,7 @@ internal fun AppCompatActivity.registerTakePictureLauncher(
 }
 
 
-internal fun AppCompatActivity.registerTakeVideoLauncher(
+internal fun ComponentActivity.registerTakeVideoLauncher(
     onSuccess: (fileUri: Uri) -> Unit,
     onFailed: (Throwable) -> Unit
 ): StatefulActivityResultLauncher<Uri> {

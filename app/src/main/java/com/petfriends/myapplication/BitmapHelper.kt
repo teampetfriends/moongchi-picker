@@ -1,4 +1,4 @@
-package com.moongchipicker.util
+package com.petfriends.myapplication
 
 import android.content.ContentResolver
 import android.content.Context
@@ -8,11 +8,12 @@ import android.graphics.Matrix
 import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.net.Uri
+import android.util.Log
 import android.util.LruCache
 import androidx.exifinterface.media.ExifInterface
 
 
-internal object BitmapHelper {
+object BitmapHelper {
     private val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
     private val cacheSize = maxMemory / 8
     private var memoryCache = object : LruCache<String, Bitmap>(cacheSize) {
@@ -58,7 +59,7 @@ internal object BitmapHelper {
             setDataSource(context, uri)
             getFrameAtTime(-1)
         }.onFailure {
-            Logger.d("Failed To get video thumbnail : ${uri.path}")
+            Log.d("petfriends","Failed To get video thumbnail : ${uri.path}")
         }.getOrNull()
 
         retriever.release()

@@ -2,8 +2,8 @@ package com.moongchipicker.util
 
 import android.content.Context
 import android.content.pm.PackageManager
+import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
 internal fun Context.isAllPermissionGranted(permissions: List<String>): Boolean {
@@ -16,7 +16,7 @@ internal fun Context.checkPermissionGranted(permissions: List<String>): Map<Stri
 }
 
 
-internal fun AppCompatActivity.registerPermissionRequestLauncher(
+internal fun ComponentActivity.registerPermissionRequestLauncher(
     permissionsToRequest: Array<String>,
     onPermissionGranted: () -> Unit,
     withDeniedPermissions: (Array<String>) -> Unit = { Logger.d("permission denied : ${it.toDebugString()}") }
