@@ -7,7 +7,7 @@
 MoongchiPicker is custom media gallery base on Google's Material Design Bottom Sheets.
 You can fetch image or video easily from camera app or gallery app or just moongchiPicker.
 Also you can request permission for fetching media from storage easily. Just give **allowPermissionRequest** option when use MoongchiPicker.
-MoongchiPicker support targetSdk 30 & scoped storage. And use registerForActivityResult rather than onActivityResult.
+**MoongchiPicker support targetSdk 30 & scoped storage. And use registerForActivityResult rather than onActivityResult.**
 MoongchiPicker depends on only one third party library **Ucrop**.
 <br/><br/>
 ## Setup
