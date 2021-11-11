@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.*
-import com.moongchipicker.data.Photo
+import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
 import com.moongchipicker.databinding.ItemSelectedMediaBinding
 import com.moongchipicker.util.*
@@ -66,7 +66,7 @@ internal class MoongchiPickerDialog private constructor(
         }
 
 
-        val selectedPhotos = MutableLiveData<MutableList<Photo>>(mutableListOf())
+        val selectedPhotos = MutableLiveData<MutableList<Media>>(mutableListOf())
         val mediaItemRecyclerViewAdapter = MoongchiPickerRecyclerViewAdapter(
             maxSelectableMediaCount,
             selectedPhotos,
@@ -115,7 +115,6 @@ internal class MoongchiPickerDialog private constructor(
             for (uri in it.reversed()) {
                 addMediaToAdapter(
                     mediaType,
-                    requireContext().contentResolver,
                     uri,
                     mediaItemRecyclerViewAdapter
                 )
@@ -125,12 +124,12 @@ internal class MoongchiPickerDialog private constructor(
     }
 
 
-    private fun updateSelectedImageLayout(photos: List<Photo>, onDeselect: (Photo) -> Unit) {
+    private fun updateSelectedImageLayout(media: List<Media>, onDeselect: (Media) -> Unit) {
         binding.selectedMedia.removeAllViews()
-        for (photo in photos) {
+        for (photo in media) {
             val itemBinding =
                 ItemSelectedMediaBinding.inflate(layoutInflater, binding.selectedMedia, false)
-            itemBinding.media.setImageBitmap(photo.bitmap)
+            itemBinding.media.setImageBitmap(photo.getBitmap(requireContext()))
             binding.selectedMedia.addView(itemBinding.root)
             itemBinding.remove.setOnClickListener {
                 onDeselect(photo)
@@ -182,36 +181,15 @@ internal class MoongchiPickerDialog private constructor(
         }
     }
 
-    private fun getMediaBitmap(
-        mediaType: PetMediaType,
-        contentResolver: ContentResolver,
-        uri: Uri
-    ): Bitmap? {
-        return when (mediaType) {
-            PetMediaType.IMAGE -> {
-                BitmapHelper.getBitmapFromUri(
-                    uri,
-                    contentResolver,
-                    BitmapHelper.BitmapSize.SMALL
-                )
-            }
-            PetMediaType.VIDEO -> {
-                BitmapHelper.getBitmapFromVideo(requireContext(), uri)
-            }
-        }
-    }
-
 
     private suspend fun addMediaToAdapter(
         mediaType: PetMediaType,
-        contentResolver: ContentResolver,
         uri: Uri,
         moongchiItemAdapter: MoongchiPickerRecyclerViewAdapter
     ) {
         withContext(Dispatchers.IO) {
-            val bitmap = getMediaBitmap(mediaType, contentResolver, uri) ?: return@withContext
             withContext(Dispatchers.Main) {
-                moongchiItemAdapter.addPhoto(Photo(uri, bitmap))
+                moongchiItemAdapter.addPhoto(Media(uri, mediaType))
             }
         }
     }

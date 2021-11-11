@@ -11,7 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.moongchipicker.data.Photo
+import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.ItemMediaBinding
 import com.moongchipicker.util.toSafe
 
@@ -29,13 +29,13 @@ internal interface MediaItemClickListener {
 
 internal class MoongchiPickerRecyclerViewAdapter(
     private val maxImageCount: Int = 1,
-    private val selectedPhotos: MutableLiveData<MutableList<Photo>>,
+    private val selectedPhotos: MutableLiveData<MutableList<Media>>,
     lifecycleOwner: LifecycleOwner,
     private val onMediaItemClickListener: MediaItemClickListener
 ) : RecyclerView.Adapter<MoongchiPickerRecyclerViewAdapter.ViewHolder>() {
 
     //Photo.empty() is placeholder for camera, gallery tile
-    private var photos = mutableListOf(Photo.empty(), Photo.empty())
+    private var photos = mutableListOf(Media.empty(), Media.empty())
 
     class ViewHolder(val binding: ItemMediaBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -115,7 +115,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setPadding(0)
 
                 val currentPhoto = photos.getOrNull(position) ?: return
-                mediaImageView.setImageBitmap(currentPhoto.bitmap)
+                mediaImageView.setImageBitmap(currentPhoto.getBitmap(context))
 
                 if (selectedPhotos.value?.contains(currentPhoto).toSafe()) {
                     //선택표시
@@ -174,8 +174,8 @@ internal class MoongchiPickerRecyclerViewAdapter(
     }
 
 
-    fun addPhoto(photo: Photo) {
-        photos.add(photo)
+    fun addPhoto(media: Media) {
+        photos.add(media)
         notifyItemInserted(photos.size - 1)
     }
 
