@@ -16,7 +16,7 @@ class TestFragment : Fragment(R.layout.fragment_test) {
 
         val iv = requireView().findViewById<ImageView>(R.id.iv)
         val picker = createMoongchiPicker(
-            mediaType = PetMediaType.IMAGE,
+            mediaType = PetMediaType.VIDEO,
             allowPermissionRequest = true,
             allowMultiple = true,
             maxMediaCountBuilder = { 5 },

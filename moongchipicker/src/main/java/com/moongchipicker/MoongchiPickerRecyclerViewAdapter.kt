@@ -53,7 +53,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
         val context = holder.binding.root.context
         val mediaImageView = holder.binding.media
         when (position) {
-            //카메라 요청버튼
+            //for camera button
             0 -> {
                 mediaImageView.setImageDrawable(
                     ResourcesCompat.getDrawableForDensity(
@@ -75,7 +75,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                     onMediaItemClickListener.onClickCamera()
                 }
             }
-            //갤러리 요청버튼
+            //for gallery button
             1 -> {
                 mediaImageView.setImageDrawable(
                     ResourcesCompat.getDrawableForDensity(
@@ -144,7 +144,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                         else {
                             Toast.makeText(
                                 context,
-                                "더이상 이미지를 추가할 수 없어요!",
+                                context.getString(R.string.err_select_over_limit),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

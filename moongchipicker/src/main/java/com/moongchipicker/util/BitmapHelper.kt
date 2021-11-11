@@ -89,14 +89,11 @@ internal object BitmapHelper {
 
         val option: BitmapFactory.Options = BitmapFactory.Options();
 
-        //다운샘플링시에 1/4 처럼 비율로 줄이니까 bitmapSize 가 뭐든 원본 비율은 유지됨
         if (bitmapSize != BitmapSize.NONE) {
             contentResolver.openInputStream(uri)?.use { inputStream ->
-                //먼저 비트맵을 조사한다.
                 option.inJustDecodeBounds = true
                 BitmapFactory.decodeStream(inputStream, null, option)
 
-                //비트맵의 크기를 토대로 샘플링할 사이즈를 구한다.
                 option.inSampleSize = calculateInSampleSize(
                     option.outHeight,
                     option.outWidth,
@@ -106,8 +103,6 @@ internal object BitmapHelper {
             }
         }
 
-        // BitmapFactory.decodeStream 하면 inputStream 이 변형되므로, 옵션을 얻고난다음에는
-        // 다시 inputStream 을 만들어야한다.
         val bitmap = contentResolver.openInputStream(uri)?.use { inputStream ->
             option.inJustDecodeBounds = false
             BitmapFactory.decodeStream(inputStream, null, option)?.let {
@@ -120,12 +115,7 @@ internal object BitmapHelper {
         }
     }
 
-    /**
-     * 타겟 너비와 높이를 기준으로 2의 거듭제곱 형태로 샘플 크기 값을 계산하는 메서드.
-     * According to this inSampleSize just reduce the pixel count. It cant be used on whole numbers,
-     * you cant map 2 pixel to 1.5 pixels, thats way it`s power of 2.
-     * https://stackoverrun.com/ko/q/10820265
-     */
+
     private fun calculateInSampleSize(
         rawHeight: Int,
         rawWidth: Int,

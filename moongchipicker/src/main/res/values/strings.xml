@@ -1,8 +1,9 @@
 <resources>
-<string name="app_name">moongchipicker</string>
-<string name="media_picker_title">@string/pick_image</string>
-<string name="pick_image">select photo</string>
-<string name="pick_video">select video</string>
-<string name="media_picker_submit">submit</string>
-<string name="media_picker_no_media">No item has been selected</string>
+    <string name="app_name">Moongchipicker</string>
+    <string name="media_picker_title">@string/pick_image</string>
+    <string name="pick_image">Select photo</string>
+    <string name="pick_video">Select video</string>
+    <string name="media_picker_submit">Submit</string>
+    <string name="media_picker_no_media">No item has been selected</string>
+    <string name="err_select_over_limit">"You can't add more media"</string>
 </resources>
