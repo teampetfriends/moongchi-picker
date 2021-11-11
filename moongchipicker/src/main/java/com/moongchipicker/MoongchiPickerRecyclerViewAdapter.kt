@@ -53,7 +53,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
         val context = holder.binding.root.context
         val mediaImageView = holder.binding.media
         when (position) {
-            //카메라 요청버튼
+            //for camera button
             0 -> {
                 mediaImageView.setImageDrawable(
                     ResourcesCompat.getDrawableForDensity(
@@ -75,7 +75,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                     onMediaItemClickListener.onClickCamera()
                 }
             }
-            //갤러리 요청버튼
+            //for gallery button
             1 -> {
                 mediaImageView.setImageDrawable(
                     ResourcesCompat.getDrawableForDensity(
