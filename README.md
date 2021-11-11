@@ -52,24 +52,58 @@ dependencyResolutionManagement {
 ## How to use
 
 > MoongchiPicker must be created on **onCreate** of activity lifecycle. Because it uses context to load file from storage, and use registerForActivityResult which is must be called before onStart
-
-Due to MoongchiPicker use registerForActivityResult, you have to pass AppCompatActivity as argument.
+> MoongchiPicker can be created in Activity and Fragment.
+> 
+Due to MoongchiPicker use registerForActivityResult, you have to pass ComponentActivity as argument.
+And pass fragmentManager as argument for showing MoongchiPickerDialog.
 And let MoongchiPicker know what media type you want to pick.
 You don't need to check permission if you give **allowPermissionRequest** option true to moongchiPicker.
 And pass MoongchiPickerListener as argument. That's it.
 
 ```kotlin
-    val moongchiPicker = MoongchiPicker(
-            this,
-            mediaType = PetMediaType.IMAGE,
+        val moongchiPicker = MoongchiPicker(
+            activity = this,
+            fragmentManager = supportFragmentManager,
             allowPermissionRequest = true,
             moongchiPickerListener = object : MoongchiPickerListener{
                 override fun onSubmitMedia(contentUris: List<Uri>) {
-                    //do something you want to do with media
+                    //Do something you want
                 }
 
                 override fun onFailed(t: Throwable) {
-                   
+                    //Do something you want
+                }
+		
+		//this implementation is optional
+                override fun onSelectedMediaCountOverLimit(limit: Int) {
+                    //Do something you want. For example, show warning dialog
+                }
+
+            }
+        )
+
+        binding.iv.setOnClickListener {
+            moongchiPicker.show()
+        }
+```
+
+Or you can use convenient extension method
+
+```kotlin
+    val moongchiPicker = createMoongchiPicker(
+            mediaType = PetMediaType.IMAGE,
+            allowPermissionRequest = true,
+            moongchiPickerListener = object : MoongchiPickerListener {
+                override fun onSubmitMedia(contentUris: List<Uri>) {
+                    //Do something you want
+                }
+
+                override fun onFailed(t: Throwable) {
+                    //Do something you want
+                }
+
+                override fun onSelectedMediaCountOverLimit(limit: Int) {
+                    //Do something you want. For example, show warning dialog
                 }
 
             })
@@ -77,24 +111,26 @@ And pass MoongchiPickerListener as argument. That's it.
         binding.iv.setOnClickListener {
             moongchiPicker.show()
         }
-```
 
 If you want to make users to pick multiple media,
 
 ```kotlin
- val moongchiPicker = MoongchiPicker(
-            this,
+  val moongchiPicker = createMoongchiPicker(
             mediaType = PetMediaType.IMAGE,
             allowPermissionRequest = true,
             allowMultiple = true,
             maxMediaCountBuilder = { 5 },
-            moongchiPickerListener = object : MoongchiPickerListener{
+            moongchiPickerListener = object : MoongchiPickerListener {
                 override fun onSubmitMedia(contentUris: List<Uri>) {
-                    //do something you want to do with media
+                    //Do something you want
                 }
 
                 override fun onFailed(t: Throwable) {
+                    //Do something you want
+                }
 
+                override fun onSelectedMediaCountOverLimit(limit: Int) {
+                    //Do something you want. For example, show warning dialog
                 }
 
             })
@@ -104,11 +140,5 @@ If you want to make users to pick multiple media,
         }
 ```
 
-And there is callback called when user picks media from gallery if user pick items over limit that you made.
-
-```kotlin
-  override fun onSelectedMediaCountOverLimit(limit: Int) { 
-  	// do something like showing warning dialog
-  }
-```
+If you want to control max visible media item on MoogchiPickerDialog, pass **maxVisibleMediaCount** to MoongchiPicker or createMoongchiPicker
 
