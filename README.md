@@ -112,7 +112,3 @@ And there is callback called when user picks media from gallery if user pick ite
   }
 ```
 
-## TODO
-
-* fragment support
-* multiple video pick
