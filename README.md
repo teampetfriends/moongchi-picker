@@ -66,8 +66,8 @@ android {
     }
 }
 ```
-> If you're using the latest version and facing :app:checkDebugDuplicateClasses error, it's mean latest version not currently available.
-> You should wait about 2~3 hours since version released
+> If you're facing :app:checkDebugDuplicateClasses error during build, it's mean latest version not currently available.
+> You should wait about 2~3 hours since latest version released
 <br/><br/>
 ## How to use
 > MoongchiPicker must be created on **onCreate** of activity lifecycle. Because it uses context to load file from storage, and use registerForActivityResult which is must be called before onStart
