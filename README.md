@@ -43,10 +43,28 @@ dependencyResolutionManagement {
 
 #### Step 2. Add the dependency
 
-```javascript
+```gradle
 	dependencies {
 	        implementation 'com.github.teampetfriends.moongchi-picker:final:x.y.z'
 	}
+```
+
+#### Step 3. Enable databinding
+
+Add it in your root module.gradle:
+
+```gradle
+
+plugins {
+    ...
+    id 'kotlin-kapt'
+}
+
+android {
+    dataBinding {
+        enabled = true
+    }
+}
 ```
 <br/><br/>
 ## How to use
