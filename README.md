@@ -4,7 +4,7 @@
 
 ## What is MoongchiPicker?
 MoongchiPicker is custom media gallery base on Google's Material Design Bottom Sheets.
-You can fetch image or video easily from camera app or gallery app or just moongchiPicker.
+You can fetch image or video easily from camera app or gallery app or just MoongchiPicker.
 Also you can request permission for fetching media from storage easily. Just give **allowPermissionRequest** option when use MoongchiPicker.
 **MoongchiPicker support targetSdk 30 & scoped storage. And use registerForActivityResult rather than onActivityResult.**
 MoongchiPicker depends on only one third party library **Ucrop**.
@@ -57,7 +57,7 @@ dependencyResolutionManagement {
 Due to MoongchiPicker use registerForActivityResult, you have to pass ComponentActivity as argument.
 And pass fragmentManager as argument for showing MoongchiPickerDialog.
 And let MoongchiPicker know what media type you want to pick.
-You don't need to check permission if you give **allowPermissionRequest** option true to moongchiPicker.
+You don't need to check permission if you give **allowPermissionRequest** option true to MoongchiPicker.
 And pass MoongchiPickerListener as argument. That's it.
 
 ```kotlin
