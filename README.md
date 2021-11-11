@@ -16,11 +16,11 @@ MoongchiPicker depends on only one third party library **Ucrop**.
 
 To get a project into your build:
 
-Step 1. Add the JitPack repository to your build file
+#### Step 1. Add the JitPack repository to your build file
 
 Add it in your root build.gradle at the end of repositories:
 
-```javascript
+```gradle
 
 	allprojects {
 		repositories {
@@ -30,7 +30,19 @@ Add it in your root build.gradle at the end of repositories:
 	}
 ```
 
-Step 2. Add the dependency
+Or in setting gradle
+
+```gradle
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+	...
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+
+#### Step 2. Add the dependency
 
 ```javascript
 	dependencies {
@@ -66,3 +78,35 @@ And pass MoongchiPickerListener as argument. That's it.
         }
 ```
 
+If you want to make users to pick multiple media,
+
+```kotlin
+ val moongchiPicker = MoongchiPicker(
+            this,
+            mediaType = PetMediaType.IMAGE,
+            allowPermissionRequest = true,
+            allowMultiple = true,
+            maxMediaCountBuilder = { 5 },
+            moongchiPickerListener = object : MoongchiPickerListener{
+                override fun onSubmitMedia(contentUris: List<Uri>) {
+                    //do something you want to do with media
+                }
+
+                override fun onFailed(t: Throwable) {
+
+                }
+
+            })
+
+        binding.iv.setOnClickListener {
+            moongchiPicker.show()
+        }
+```
+
+And there is callback called when user picks media from gallery if user pick items over limit that you made.
+
+```kotlin
+  override fun onSelectedMediaCountOverLimit(limit: Int) { 
+  	// do something like showing warning dialog
+  }
+```
