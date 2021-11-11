@@ -74,6 +74,13 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setOnClickListener {
                     onMediaItemClickListener.onClickCamera()
                 }
+                mediaImageView.setColorFilter(
+                    ResourcesCompat.getColor(
+                        context.resources,
+                        R.color.pef_transparent,
+                        null
+                    )
+                )
             }
             //for gallery button
             1 -> {
@@ -96,6 +103,13 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setOnClickListener {
                     onMediaItemClickListener.onClickGallery()
                 }
+                mediaImageView.setColorFilter(
+                    ResourcesCompat.getColor(
+                        context.resources,
+                        R.color.pef_transparent,
+                        null
+                    )
+                )
             }
             else -> {
                 mediaImageView.setPadding(0)
