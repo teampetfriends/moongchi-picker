@@ -21,6 +21,9 @@ class MainActivity : AppCompatActivity() {
         val moongchiPicker = createMoongchiPicker(
             mediaType = PetMediaType.IMAGE,
             allowPermissionRequest = true,
+            allowMultiple = false,
+            maxMediaCountBuilder = { 5 },
+            maxVisibleMediaCount = 3,
             moongchiPickerListener = object : MoongchiPickerListener{
                 override fun onSubmitMedia(contentUris: List<Uri>) {
                     if(contentUris.isEmpty()){

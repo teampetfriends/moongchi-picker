@@ -29,7 +29,8 @@ interface MoongchiPickerListener {
  * @param activity activity to register [ActivityResultContracts] that MoonchiPicker need
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
- * @param maxMediaCountBuilder builder for build max selection count for fetching media from gallery
+ * @param maxSelectableMediaCountBuilder builder for build max selection count for fetching media from gallery
+ * @param maxVisibleMediaCount MoongchiPickerDialog shows this amount of media items
  */
 class MoongchiPicker(
     activity: ComponentActivity,
@@ -37,7 +38,8 @@ class MoongchiPicker(
     allowPermissionRequest: Boolean = false,
     mediaType: PetMediaType,
     allowMultiple: Boolean = false,
-    maxMediaCountBuilder: () -> Int = { 1 },
+    maxSelectableMediaCountBuilder: () -> Int = { 1 },
+    maxVisibleMediaCount: Int = MoongchiPickerDialog.MAX_VISIBLE_MEDIA_COUNT,
     moongchiPickerListener: MoongchiPickerListener
 ) {
 
@@ -48,15 +50,21 @@ class MoongchiPicker(
         val moongchiPickerDialogListener = MoongchiPickerDelegate(activity).registerMediaPickRequest(
             mediaType,
             allowMultiple,
-            maxMediaCountBuilder,
+            maxSelectableMediaCountBuilder,
             moongchiPickerListener
         )
 
         fun createMoongchiPickerDialog(): MoongchiPickerDialog {
+            val maxSelectableMediaCount = if (allowMultiple) {
+                maxSelectableMediaCountBuilder()
+            } else {
+                1
+            }
             return MoongchiPickerDialog.newInstance(
                 mediaType,
                 moongchiPickerDialogListener,
-                maxMediaCountBuilder()
+                maxSelectableMediaCount,
+                maxVisibleMediaCount
             )
         }
 
@@ -73,7 +81,7 @@ class MoongchiPicker(
                 withDeniedPermissions = {
                     moongchiPickerListener.onFailed(Throwable("permission denied : ${it.toDebugString()}"))
                 }
-                )
+            )
             return { launcher.launch() }
         }
 
@@ -95,14 +103,16 @@ class MoongchiPicker(
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
  * @param maxMediaCountBuilder builder for build max selection count for fetching media from gallery
+ * @param maxVisibleMediaCount MoongchiPickerDialog shows this amount of media items
  */
 fun AppCompatActivity.createMoongchiPicker(
     allowPermissionRequest: Boolean = false,
     mediaType: PetMediaType,
     allowMultiple: Boolean = false,
     maxMediaCountBuilder: () -> Int = { 1 },
+    maxVisibleMediaCount: Int = MoongchiPickerDialog.MAX_VISIBLE_MEDIA_COUNT,
     moongchiPickerListener: MoongchiPickerListener
-) = MoongchiPicker(this, supportFragmentManager, allowPermissionRequest, mediaType, allowMultiple, maxMediaCountBuilder, moongchiPickerListener)
+) = MoongchiPicker(this, supportFragmentManager, allowPermissionRequest, mediaType, allowMultiple, maxMediaCountBuilder, maxVisibleMediaCount, moongchiPickerListener)
 
 
 /**
@@ -110,11 +120,13 @@ fun AppCompatActivity.createMoongchiPicker(
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
  * @param maxMediaCountBuilder builder for build max selection count for fetching media from gallery
+ * @param maxVisibleMediaCount MoongchiPickerDialog shows this amount of media items
  */
 fun Fragment.createMoongchiPicker(
     allowPermissionRequest: Boolean = false,
     mediaType: PetMediaType,
     allowMultiple: Boolean = false,
     maxMediaCountBuilder: () -> Int = { 1 },
+    maxVisibleMediaCount: Int = MoongchiPickerDialog.MAX_VISIBLE_MEDIA_COUNT,
     moongchiPickerListener: MoongchiPickerListener
-) =  MoongchiPicker(requireActivity(), childFragmentManager,allowPermissionRequest, mediaType, allowMultiple, maxMediaCountBuilder, moongchiPickerListener)
+) = MoongchiPicker(requireActivity(), childFragmentManager, allowPermissionRequest, mediaType, allowMultiple, maxMediaCountBuilder, maxVisibleMediaCount, moongchiPickerListener)

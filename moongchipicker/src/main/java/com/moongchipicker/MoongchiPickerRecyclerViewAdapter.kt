@@ -11,7 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.moongchipicker.data.Photo
+import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.ItemMediaBinding
 import com.moongchipicker.util.toSafe
 
@@ -29,18 +29,18 @@ internal interface MediaItemClickListener {
 
 internal class MoongchiPickerRecyclerViewAdapter(
     private val maxImageCount: Int = 1,
-    private val selectedPhotos: MutableLiveData<MutableList<Photo>>,
+    private val selectedMediaList: MutableLiveData<MutableList<Media>>,
     lifecycleOwner: LifecycleOwner,
     private val onMediaItemClickListener: MediaItemClickListener
 ) : RecyclerView.Adapter<MoongchiPickerRecyclerViewAdapter.ViewHolder>() {
 
     //Photo.empty() is placeholder for camera, gallery tile
-    private var photos = mutableListOf(Photo.empty(), Photo.empty())
+    private var mediaList = mutableListOf(Media.empty(), Media.empty())
 
     class ViewHolder(val binding: ItemMediaBinding) : RecyclerView.ViewHolder(binding.root)
 
     init {
-        selectedPhotos.observe(lifecycleOwner, Observer {
+        selectedMediaList.observe(lifecycleOwner, Observer {
             notifyDataSetChanged()
         })
     }
@@ -74,6 +74,13 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setOnClickListener {
                     onMediaItemClickListener.onClickCamera()
                 }
+                mediaImageView.setColorFilter(
+                    ResourcesCompat.getColor(
+                        context.resources,
+                        R.color.pef_transparent,
+                        null
+                    )
+                )
             }
             //for gallery button
             1 -> {
@@ -96,14 +103,21 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setOnClickListener {
                     onMediaItemClickListener.onClickGallery()
                 }
+                mediaImageView.setColorFilter(
+                    ResourcesCompat.getColor(
+                        context.resources,
+                        R.color.pef_transparent,
+                        null
+                    )
+                )
             }
             else -> {
                 mediaImageView.setPadding(0)
 
-                val currentPhoto = photos.getOrNull(position) ?: return
-                mediaImageView.setImageBitmap(currentPhoto.bitmap)
+                val currentMedia = mediaList.getOrNull(position) ?: return
+                mediaImageView.setImageBitmap(currentMedia.getBitmap(context))
 
-                if (selectedPhotos.value?.contains(currentPhoto).toSafe()) {
+                if (selectedMediaList.value?.contains(currentMedia).toSafe()) {
                     //선택표시
                     mediaImageView.setColorFilter(
                         ResourcesCompat.getColor(
@@ -125,19 +139,19 @@ internal class MoongchiPickerRecyclerViewAdapter(
 
                 mediaImageView.setOnClickListener {
                     if (maxImageCount <= 1) {
-                        onMediaItemClickListener.onSubmit(currentPhoto.uri)
+                        onMediaItemClickListener.onSubmit(currentMedia.uri)
                         return@setOnClickListener
                     }
-                    //when user click selected tile, then tile should removed from selectedPhotos
-                     if (selectedPhotos.value?.contains(currentPhoto).toSafe()) {
-                        selectedPhotos.value = selectedPhotos.value.toSafe().toMutableList()
-                            .apply { remove(currentPhoto) }
+                    //when user click selected tile, then tile should removed from selectedMediaList
+                     if (selectedMediaList.value?.contains(currentMedia).toSafe()) {
+                        selectedMediaList.value = selectedMediaList.value.toSafe().toMutableList()
+                            .apply { remove(currentMedia) }
 
                         notifyItemChanged(position)
                     } else {
-                        if (selectedPhotos.value?.size.toSafe() < maxImageCount) {
-                            selectedPhotos.value = selectedPhotos.value.toSafe().toMutableList()
-                                .apply { add(currentPhoto) }
+                        if (selectedMediaList.value?.size.toSafe() < maxImageCount) {
+                            selectedMediaList.value = selectedMediaList.value.toSafe().toMutableList()
+                                .apply { add(currentMedia) }
                             notifyItemChanged(position)
                         }
                         //when user select media over limit
@@ -156,13 +170,13 @@ internal class MoongchiPickerRecyclerViewAdapter(
     }
 
     override fun getItemCount(): Int {
-        return photos.size
+        return mediaList.size
     }
 
 
-    fun addPhoto(photo: Photo) {
-        photos.add(photo)
-        notifyItemInserted(photos.size - 1)
+    fun addMedia(media: Media) {
+        mediaList.add(media)
+        notifyItemInserted(mediaList.size - 1)
     }
 
     companion object{

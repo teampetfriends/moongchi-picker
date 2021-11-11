@@ -78,13 +78,13 @@ internal class MoongchiPickerDelegate(
 
     private fun registerPickFromGalleryRequest(
         mediaType: PetMediaType,
-        isMultipleImage: Boolean = false,
+        allowMultiple: Boolean = false,
         maxImageCountBuilder: () -> Int,
         moongchiPickerListener: MoongchiPickerListener
     ): StatefulActivityResultLauncher<String> {
         return when (mediaType) {
             PetMediaType.IMAGE -> {
-                if (isMultipleImage) {
+                if (allowMultiple) {
                     createPickMultiplePictureFromGallery(
                         onSuccess = {
                             val maxImageCount = maxImageCountBuilder()
