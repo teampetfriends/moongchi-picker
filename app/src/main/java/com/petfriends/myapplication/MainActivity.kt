@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
             allowPermissionRequest = true,
             allowMultiple = true,
             maxMediaCountBuilder = { 5 },
+            maxVisibleMediaCount = 3,
             moongchiPickerListener = object : MoongchiPickerListener{
                 override fun onSubmitMedia(contentUris: List<Uri>) {
                     if(contentUris.isEmpty()){

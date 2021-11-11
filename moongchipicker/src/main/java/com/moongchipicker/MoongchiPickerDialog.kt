@@ -52,10 +52,11 @@ internal class MoongchiPickerDialog private constructor(
 
         val moongchiPickerListener =
             arguments?.getSerializable(EXTRA_MEDIA_PICKER_LISTENER) as? MoongchiPickerDialogListener ?: return
-        val maxImageCount = arguments?.getInt(EXTRA_MAX_IMAGE_COUNT) ?: 1
+        val maxSelectableMediaCount = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT) ?: 1
         val mediaType = arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: return
+        val maxVisibleMediaCount =arguments?.getInt(EXTRA_MAX_VISIBLE_MEDIA_COUNT) ?: MAX_VISIBLE_MEDIA_COUNT
 
-        if (maxImageCount <= 1) {
+        if (maxSelectableMediaCount <= 1) {
             binding.selectedMediaFrame.visibility = View.GONE
             binding.submit.visibility = View.GONE
         }
@@ -67,7 +68,7 @@ internal class MoongchiPickerDialog private constructor(
 
         val selectedPhotos = MutableLiveData<MutableList<Photo>>(mutableListOf())
         val mediaItemRecyclerViewAdapter = MoongchiPickerRecyclerViewAdapter(
-            maxImageCount,
+            maxSelectableMediaCount,
             selectedPhotos,
             viewLifecycleOwner,
             object : MediaItemClickListener {
@@ -109,7 +110,7 @@ internal class MoongchiPickerDialog private constructor(
         }
 
 
-        loadMediaFileFromStorage(mediaType, MAX_MEDIA_SIZE) {
+        loadMediaFileFromStorage(mediaType, maxVisibleMediaCount) {
             //most recently modified file comes first
             for (uri in it.reversed()) {
                 addMediaToAdapter(
@@ -217,21 +218,26 @@ internal class MoongchiPickerDialog private constructor(
 
 
     companion object {
-        private const val EXTRA_MAX_IMAGE_COUNT = "EXTRA_MAX_IMAGE_COUNT"
         private const val EXTRA_MEDIA_PICKER_LISTENER = "EXTRA_MEDIA_PICKER_LISTENER"
         private const val EXTRA_MEDIA_TYPE = "EXTRA_MEDIA_TYPE"
+        private const val EXTRA_MAX_SELECTABLE_MEDIA_COUNT = "EXTRA_MAX_IMAGE_COUNT"
+        private const val EXTRA_MAX_VISIBLE_MEDIA_COUNT = "EXTRA_MAX_MEDIA_SIZE"
+        const val MAX_VISIBLE_MEDIA_COUNT = 25
 
-        private const val MAX_MEDIA_SIZE = 25
-
+        /**
+         * @param maxVisibleMediaCount MoongchiPickerDialog shows this amount of media items
+         */
         fun newInstance(
             mediaType: PetMediaType,
             moongchiPickerDialogListener: MoongchiPickerDialogListener,
-            maxImageCount: Int = 1
+            maxSelectableMediaCount: Int = 1,
+            maxVisibleMediaCount : Int = MAX_VISIBLE_MEDIA_COUNT
         ): MoongchiPickerDialog {
             val args = Bundle()
-            args.putInt(EXTRA_MAX_IMAGE_COUNT, maxImageCount)
             args.putSerializable(EXTRA_MEDIA_PICKER_LISTENER, moongchiPickerDialogListener)
             args.putSerializable(EXTRA_MEDIA_TYPE, mediaType)
+            args.putInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT, maxSelectableMediaCount)
+            args.putInt(EXTRA_MAX_VISIBLE_MEDIA_COUNT, maxVisibleMediaCount)
             val fragment = MoongchiPickerDialog()
             fragment.arguments = args
             return fragment
