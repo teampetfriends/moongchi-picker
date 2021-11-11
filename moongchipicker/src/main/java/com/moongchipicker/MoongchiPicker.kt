@@ -55,7 +55,7 @@ class MoongchiPicker(
         )
 
         fun createMoongchiPickerDialog(): MoongchiPickerDialog {
-            val maxSelectableMEdiaCount = if (allowMultiple) {
+            val maxSelectableMediaCount = if (allowMultiple) {
                 maxSelectableMediaCountBuilder()
             } else {
                 1
@@ -63,7 +63,7 @@ class MoongchiPicker(
             return MoongchiPickerDialog.newInstance(
                 mediaType,
                 moongchiPickerDialogListener,
-                maxSelectableMEdiaCount,
+                maxSelectableMediaCount,
                 maxVisibleMediaCount
             )
         }
