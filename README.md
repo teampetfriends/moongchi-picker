@@ -51,7 +51,7 @@ dependencyResolutionManagement {
 
 #### Step 3. Enable databinding
 
-Add it in your root module.gradle:
+Add it in your module.gradle:
 
 ```gradle
 
