@@ -45,7 +45,7 @@ dependencyResolutionManagement {
 
 ```javascript
 	dependencies {
-	        implementation 'com.github.teampetfriends.moongchi-picker:final:1.0.1'
+	        implementation 'com.github.teampetfriends.moongchi-picker:final:x.y.z'
 	}
 ```
 <br/><br/>
