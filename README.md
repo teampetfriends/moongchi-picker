@@ -77,7 +77,7 @@ android {
 4. Submit media  
 
 ![alt](demo01.gif)
-![alt](demo02.gif)
+![alt](demo02.gif)  
 ![alt](demo03.gif)
 ![alt](demo04.gif)
 >MoongchiPicker supports english and korean
