@@ -80,7 +80,7 @@ android {
 ![alt](demo02.gif)
 ![alt](demo03.gif)
 ![alt](demo04.gif)
-
+>MoongchiPicker supports english and korean
 ## How to use
 > MoongchiPicker must be created on **onCreate** of activity lifecycle. Because it uses context to load file from storage, and use registerForActivityResult which is must be called before onStart
 > MoongchiPicker can be created in Activity and Fragment.
@@ -172,4 +172,7 @@ If you want to make users to pick multiple media,
 ```
 
 If you want to control max visible media item on MoogchiPickerDialog, pass **maxVisibleMediaCount** to MoongchiPicker or createMoongchiPicker
+
+
+
 
