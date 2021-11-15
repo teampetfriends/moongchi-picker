@@ -1,6 +1,11 @@
-[![](https://jitpack.io/v/teampetfriends/moongchi-picker.svg)](https://jitpack.io/#teampetfriends/moongchi-picker)
-> This is only experimental version of MoongchiPicker. It will change a lot later.
-<br/><br/>
+<h1 align="center">MoongchiPicker</h1>
+
+<p align="center">
+<img alt="Google" src="https://skydoves.github.io/badges/google-devlib.svg"/></br>
+<img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/>
+<img alt="API" src="https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat"/>
+<img alt="Version" src="https://jitpack.io/v/teampetfriends/moongchi-picker.svg"/>
+</p>
 
 ## What is MoongchiPicker?
 MoongchiPicker is custom media gallery base on Google's Material Design Bottom Sheets.
@@ -45,7 +50,7 @@ dependencyResolutionManagement {
 
 ```gradle
 	dependencies {
-	        implementation 'com.github.teampetfriends.moongchi-picker:final:x.y.z'
+	        implementation 'com.github.teampetfriends.moongchi-picker:final:1.0.2'
 	}
 ```
 
@@ -172,6 +177,13 @@ If you want to make users to pick multiple media,
 ```
 
 If you want to control max visible media items on MoogchiPickerDialog, pass **maxVisibleMediaCount** to MoongchiPicker or createMoongchiPicker
+
+## contributor
+1. Tim (Android Developer)
+- Github : https://github.com/bsw112
+- Blog : https://blackmanta.tistory.com/
+- Email : manta11246@gmail.com
+
 
 ## License
 
