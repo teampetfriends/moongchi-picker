@@ -177,7 +177,7 @@ binding.iv.setOnClickListener {
 
 If you want to control max visible media items on MoogchiPickerDialog, pass **maxVisibleMediaCount** to MoongchiPicker or createMoongchiPicker
 
-## Contributor
+## Contributors
 1. Tim (Android Developer)
 - Github: https://github.com/bsw112
 - Blog: https://blackmanta.tistory.com/
