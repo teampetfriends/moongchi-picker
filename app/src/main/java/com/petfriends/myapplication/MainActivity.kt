@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         val moongchiPicker = createMoongchiPicker(
             mediaType = PetMediaType.IMAGE,
             allowPermissionRequest = true,
