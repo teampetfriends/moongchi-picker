@@ -176,7 +176,7 @@ If you want to control max visible media items on MoogchiPickerDialog, pass **ma
 ## License
 
 ```
-The library is licensed under the MIT License:
+This library is licensed under the MIT License:
 
 Copyright (c) 2021 Petfriends
 
