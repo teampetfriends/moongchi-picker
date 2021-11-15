@@ -178,7 +178,7 @@ If you want to make users to pick multiple media,
 
 If you want to control max visible media items on MoogchiPickerDialog, pass **maxVisibleMediaCount** to MoongchiPicker or createMoongchiPicker
 
-## contributor
+## Contributor
 1. Tim (Android Developer)
 - Github : https://github.com/bsw112
 - Blog : https://blackmanta.tistory.com/
