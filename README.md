@@ -25,13 +25,12 @@ To get a project into your build:
 Add it in your root build.gradle at the end of repositories:
 
 ```gradle
-
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
 ```
 
 Or in setting gradle
@@ -40,7 +39,7 @@ Or in setting gradle
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-	...
+	    ...
         maven { url "https://jitpack.io" }
     }
 }
@@ -49,9 +48,9 @@ dependencyResolutionManagement {
 #### Step 2. Add the dependency
 
 ```gradle
-	dependencies {
-	        implementation 'com.github.teampetfriends.moongchi-picker:final:1.0.2'
-	}
+dependencies {
+    implementation 'com.github.teampetfriends.moongchi-picker:final:1.0.2'
+}
 ```
 
 #### Step 3. Enable databinding
@@ -97,93 +96,96 @@ You don't need to check permission if you give **allowPermissionRequest** option
 And pass MoongchiPickerListener as argument. That's it.
 
 ```kotlin
-        val moongchiPicker = MoongchiPicker(
-            activity = this,
-            fragmentManager = supportFragmentManager,
-            allowPermissionRequest = true,
-            moongchiPickerListener = object : MoongchiPickerListener{
-                override fun onSubmitMedia(contentUris: List<Uri>) {
-                    //Do something you want
-                }
-
-                override fun onFailed(t: Throwable) {
-                    //Do something you want
-                }
-		
-		//this implementation is optional
-                override fun onSelectedMediaCountOverLimit(limit: Int) {
-                    //Do something you want. For example, show warning dialog
-                }
-
-            }
-        )
-
-        binding.iv.setOnClickListener {
-            moongchiPicker.show()
+val moongchiPicker = MoongchiPicker(
+    activity = this,
+    fragmentManager = supportFragmentManager,
+    allowPermissionRequest = true,
+    moongchiPickerListener = object : MoongchiPickerListener{
+        override fun onSubmitMedia(contentUris: List<Uri>) {
+            //Do something you want
         }
+
+        override fun onFailed(t: Throwable) {
+            //Do something you want
+        }
+
+        //this implementation is optional
+        override fun onSelectedMediaCountOverLimit(limit: Int) {
+            //Do something you want. For example, show warning dialog
+        }
+
+    }
+)
+
+binding.iv.setOnClickListener {
+    moongchiPicker.show()
+}
 ```
 
 Or you can use convenient extension method
 
 ```kotlin
-    val moongchiPicker = createMoongchiPicker(
-            mediaType = PetMediaType.IMAGE,
-            allowPermissionRequest = true,
-            moongchiPickerListener = object : MoongchiPickerListener {
-                override fun onSubmitMedia(contentUris: List<Uri>) {
-                    //Do something you want
-                }
-
-                override fun onFailed(t: Throwable) {
-                    //Do something you want
-                }
-
-                override fun onSelectedMediaCountOverLimit(limit: Int) {
-                    //Do something you want. For example, show warning dialog
-                }
-
-            })
-
-        binding.iv.setOnClickListener {
-            moongchiPicker.show()
+val moongchiPicker = createMoongchiPicker(
+    mediaType = PetMediaType.IMAGE,
+    allowPermissionRequest = true,
+    moongchiPickerListener = object : MoongchiPickerListener {
+        override fun onSubmitMedia(contentUris: List<Uri>) {
+            //Do something you want
         }
+
+        override fun onFailed(t: Throwable) {
+            //Do something you want
+        }
+
+        override fun onSelectedMediaCountOverLimit(limit: Int) {
+            //Do something you want. For example, show warning dialog
+        }
+
+    })
+
+binding.iv.setOnClickListener {
+    moongchiPicker.show()
+}
 ```
 If you want to make users to pick multiple media,
 
 ```kotlin
-  val moongchiPicker = createMoongchiPicker(
-            mediaType = PetMediaType.IMAGE,
-            allowPermissionRequest = true,
-            allowMultiple = true,
-            maxMediaCountBuilder = { 5 },
-            moongchiPickerListener = object : MoongchiPickerListener {
-                override fun onSubmitMedia(contentUris: List<Uri>) {
-                    //Do something you want
-                }
-
-                override fun onFailed(t: Throwable) {
-                    //Do something you want
-                }
-
-                override fun onSelectedMediaCountOverLimit(limit: Int) {
-                    //Do something you want. For example, show warning dialog
-                }
-
-            })
-
-        binding.iv.setOnClickListener {
-            moongchiPicker.show()
+val moongchiPicker = createMoongchiPicker(
+    mediaType = PetMediaType.IMAGE,
+    allowPermissionRequest = true,
+    allowMultiple = true,
+    maxMediaCountBuilder = { 5 },
+    moongchiPickerListener = object : MoongchiPickerListener {
+        override fun onSubmitMedia(contentUris: List<Uri>) {
+            //Do something you want
         }
+
+        override fun onFailed(t: Throwable) {
+            //Do something you want
+        }
+
+        override fun onSelectedMediaCountOverLimit(limit: Int) {
+            //Do something you want. For example, show warning dialog
+        }
+
+    })
+
+binding.iv.setOnClickListener {
+    moongchiPicker.show()
+}
 ```
 
 If you want to control max visible media items on MoogchiPickerDialog, pass **maxVisibleMediaCount** to MoongchiPicker or createMoongchiPicker
 
 ## Contributor
 1. Tim (Android Developer)
-- Github : https://github.com/bsw112
-- Blog : https://blackmanta.tistory.com/
-- Email : manta11246@gmail.com
+- Github: https://github.com/bsw112
+- Blog: https://blackmanta.tistory.com/
+- Email: manta11246@gmail.com
 
+2. Zeeto (Android Developer)
+- Github: https://github.com/cpstudy
+- Email: guide94@naver.com
 
 ## License
 
