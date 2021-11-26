@@ -70,6 +70,16 @@ android {
     }
 }
 ```
+
+#### Setp 4. set compileSdkVersion 31
+
+In your module.gradle:
+```
+android {
+    ...
+     compileSdkVersion 31
+}
+```
 > If you're facing :app:checkDebugDuplicateClasses error during build, it's mean latest version not currently available.
 > You should wait about 2~3 hours since latest version released
 <br/><br/>
