@@ -71,7 +71,7 @@ android {
 }
 ```
 
-#### Setp 4. set compileSdkVersion 31
+#### Setp 4. Set compileSdkVersion 31
 
 In your module.gradle:
 ```
