@@ -49,7 +49,7 @@ dependencyResolutionManagement {
 
 ```gradle
 dependencies {
-    implementation 'com.github.teampetfriends.moongchi-picker:final:1.0.2'
+    implementation 'com.github.teampetfriends.moongchi-picker:final:x.y.z'
 }
 ```
 
