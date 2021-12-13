@@ -30,7 +30,7 @@ internal fun ComponentActivity.registerTakePictureLauncher(
         if (isPictureSaved) {
             onSuccess(contentUri)
         } else {
-            onFailed(Throwable("[ActivityResultContracts.TakePicture()] failed : picture not saved"))
+            onFailed(TakePictureFailedException())
         }
     }.toStatefulActivityResultLauncher(contentUri)
 }
@@ -46,7 +46,7 @@ internal fun ComponentActivity.registerTakeVideoLauncher(
         if (isSucceed) {
             onSuccess(contentUri)
         } else {
-            onFailed(Throwable("[TakeVideoContract()] failed : result code is not Activity.RESULT_OK"))
+            onFailed(TakeVideoFailedException())
         }
     }.toStatefulActivityResultLauncher(contentUri)
 }

@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.moongchipicker.util.PermissionDeniedException
 import com.moongchipicker.util.registerPermissionRequestLauncher
 import com.moongchipicker.util.toDebugString
 
@@ -79,7 +80,7 @@ class MoongchiPicker(
                     createMoongchiPickerDialog().show(fragmentManager, null)
                 },
                 withDeniedPermissions = {
-                    moongchiPickerListener.onFailed(Throwable("permission denied : ${it.toDebugString()}"))
+                    moongchiPickerListener.onFailed(PermissionDeniedException(it))
                 }
             )
             return { launcher.launch() }

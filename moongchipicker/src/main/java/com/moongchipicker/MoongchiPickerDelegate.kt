@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.moongchipicker.util.*
 import com.moongchipicker.util.StatefulActivityResultLauncher
 import com.moongchipicker.util.registerTakePictureLauncher
 import com.moongchipicker.util.registerTakeVideoLauncher
@@ -79,7 +80,7 @@ internal class MoongchiPickerDelegate(
     private fun registerPickFromGalleryRequest(
         mediaType: PetMediaType,
         allowMultiple: Boolean = false,
-        maxImageCountBuilder: () -> Int,
+        maxMediaCountBuilder: () -> Int,
         moongchiPickerListener: MoongchiPickerListener
     ): StatefulActivityResultLauncher<String> {
         return when (mediaType) {
@@ -87,7 +88,7 @@ internal class MoongchiPickerDelegate(
                 if (allowMultiple) {
                     createPickMultiplePictureFromGallery(
                         onSuccess = {
-                            val maxImageCount = maxImageCountBuilder()
+                            val maxImageCount = maxMediaCountBuilder()
                             if (it.size > maxImageCount) {
                                 moongchiPickerListener.onSelectedMediaCountOverLimit(
                                     maxImageCount
@@ -107,10 +108,27 @@ internal class MoongchiPickerDelegate(
                 }
             }
             PetMediaType.VIDEO -> {
-                createPickVideoFromGallery(
-                    onSuccess = { moongchiPickerListener.onSubmitMedia(listOf(it)) },
-                    onFailed = { moongchiPickerListener.onFailed(it) }
-                )
+                if (allowMultiple) {
+                    createPickMultipleVideoFromGallery(
+                        onSuccess = {
+                            val maxImageCount = maxMediaCountBuilder()
+                            if (it.size > maxImageCount) {
+                                moongchiPickerListener.onSelectedMediaCountOverLimit(
+                                    maxImageCount
+                                )
+                            }
+                            moongchiPickerListener.onSubmitMedia(
+                                it.subList(0, min(it.size, maxImageCount))
+                            )
+                        },
+                        onFailed = { moongchiPickerListener.onFailed(it) }
+                    )
+                } else {
+                    createPickVideoFromGallery(
+                        onSuccess = { moongchiPickerListener.onSubmitMedia(listOf(it)) },
+                        onFailed = { moongchiPickerListener.onFailed(it) }
+                    )
+                }
             }
         }
     }
@@ -122,7 +140,7 @@ internal class MoongchiPickerDelegate(
     ) =
         activity.registerForActivityResult(ActivityResultContracts.GetContent()) { contentUri: Uri? ->
             if (contentUri == null) {
-                onFailed(Throwable("[ActivityResultContracts.GetContent()] failed : result uri is null"))
+                onFailed(GetPictureFailedException())
             } else {
                 onSuccess(contentUri)
             }
@@ -135,7 +153,7 @@ internal class MoongchiPickerDelegate(
     ) =
         activity.registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { contentUri: List<Uri>? ->
             if (contentUri == null) {
-                onFailed(Throwable("[ActivityResultContracts.GetMultipleContents()] failed : result uri is null"))
+                onFailed(GetMultiplePicturesFailedException())
             } else {
                 onSuccess(contentUri)
             }
@@ -148,7 +166,19 @@ internal class MoongchiPickerDelegate(
     ) =
         activity.registerForActivityResult(ActivityResultContracts.GetContent()) { contentUri: Uri? ->
             if (contentUri == null) {
-                onFailed(Throwable("[ActivityResultContracts.GetContent()] failed : result uri is null"))
+                onFailed(GetVideoFailedException())
+            } else {
+                onSuccess(contentUri)
+            }
+        }.toStatefulActivityResultLauncher("video/*")
+
+    private fun createPickMultipleVideoFromGallery(
+        onSuccess: (List<Uri>) -> Unit,
+        onFailed: (Throwable) -> Unit
+    ) =
+        activity.registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { contentUri: List<Uri>? ->
+            if (contentUri == null) {
+                onFailed(GetMultipleVideoFailedException())
             } else {
                 onSuccess(contentUri)
             }

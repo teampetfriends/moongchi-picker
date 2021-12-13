@@ -19,11 +19,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val moongchiPicker = createMoongchiPicker(
-            mediaType = PetMediaType.IMAGE,
+            mediaType = PetMediaType.VIDEO,
             allowPermissionRequest = true,
-            allowMultiple = false,
-            maxMediaCountBuilder = { 5 },
-            maxVisibleMediaCount = 3,
+            allowMultiple = true,
+            maxMediaCountBuilder = { 3 },
+            maxVisibleMediaCount = 20,
             moongchiPickerListener = object : MoongchiPickerListener{
                 override fun onSubmitMedia(contentUris: List<Uri>) {
                     if(contentUris.isEmpty()){
@@ -33,9 +33,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onFailed(t: Throwable) {
-                    Log.w("petfriends", t.message.toString())
+                    Log.w("petfriends", t.stackTraceToString())
                 }
 
+                override fun onSelectedMediaCountOverLimit(limit: Int) {
+                    super.onSelectedMediaCountOverLimit(limit)
+                }
             })
 
         binding.iv.setOnClickListener {
