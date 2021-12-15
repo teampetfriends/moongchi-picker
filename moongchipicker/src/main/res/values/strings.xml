@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Moongchipicker</string>
     <string name="media_picker_title">@string/pick_image</string>
     <string name="pick_image">Select photo</string>
     <string name="pick_video">Select video</string>
