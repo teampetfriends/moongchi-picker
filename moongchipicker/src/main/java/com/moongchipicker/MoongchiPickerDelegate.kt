@@ -53,6 +53,10 @@ internal class MoongchiPickerDelegate(
             override fun onClickGallery() {
                 galleryRequest.launch()
             }
+
+            override fun onFailed(t: Throwable) {
+                moongchiPickerListener.onFailed(t)
+            }
         }
     }
 

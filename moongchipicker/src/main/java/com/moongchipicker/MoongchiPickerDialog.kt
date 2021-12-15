@@ -24,6 +24,7 @@ internal interface MoongchiPickerDialogListener : Serializable {
     fun onSubmitMedia(uris: List<Uri>)
     fun onClickCamera()
     fun onClickGallery()
+    fun onFailed(t : Throwable)
 }
 
 internal class MoongchiPickerDialog private constructor(
@@ -47,7 +48,7 @@ internal class MoongchiPickerDialog private constructor(
         super.onViewCreated(view, savedInstanceState)
 
 
-        val moongchiPickerListener =
+        val moongchiPickerDialogListener =
             arguments?.getSerializable(EXTRA_MEDIA_PICKER_LISTENER) as? MoongchiPickerDialogListener ?: return
         val maxSelectableMediaCount = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT) ?: 1
         val mediaType = arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: return
@@ -70,17 +71,17 @@ internal class MoongchiPickerDialog private constructor(
             viewLifecycleOwner,
             object : MediaItemClickListener {
                 override fun onClickCamera() {
-                    moongchiPickerListener.onClickCamera()
+                    moongchiPickerDialogListener.onClickCamera()
                     dismiss()
                 }
 
                 override fun onClickGallery() {
-                    moongchiPickerListener.onClickGallery()
+                    moongchiPickerDialogListener.onClickGallery()
                     dismiss()
                 }
 
                 override fun onSubmit(uri: Uri) {
-                    moongchiPickerListener.onSubmitMedia(listOf(uri))
+                    moongchiPickerDialogListener.onSubmitMedia(listOf(uri))
                     dismiss()
                 }
             })
@@ -102,21 +103,26 @@ internal class MoongchiPickerDialog private constructor(
         })
 
         binding.submit.setOnClickListener {
-            moongchiPickerListener.onSubmitMedia(selectedMediaList.value?.map { it.uri }.toSafe())
+            moongchiPickerDialogListener.onSubmitMedia(selectedMediaList.value?.map { it.uri }.toSafe())
             dismiss()
         }
 
 
-        loadMediaFileFromStorage(mediaType, maxVisibleMediaCount) {
-            //most recently modified file comes first
-            for (uri in it.reversed()) {
-                addMediaToAdapter(
-                    mediaType,
-                    uri,
-                    mediaItemRecyclerViewAdapter
-                )
+        kotlin.runCatching {
+            loadMediaFileFromStorage(mediaType, maxVisibleMediaCount) {
+                //most recently modified file comes first
+                for (uri in it.reversed()) {
+                    addMediaToAdapter(
+                        mediaType,
+                        uri,
+                        mediaItemRecyclerViewAdapter
+                    )
+                }
             }
+        }.onFailure {
+            moongchiPickerDialogListener.onFailed(it)
         }
+
 
     }
 
