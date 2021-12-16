@@ -25,10 +25,13 @@ import kotlin.jvm.Throws
 internal interface MoongchiPickerDialogListener : Serializable {
     @MainThread
     fun onSubmitMedia(uris: List<Uri>)
+
     @MainThread
     fun onClickCamera()
+
     @MainThread
     fun onClickGallery()
+
     @MainThread
     fun onFailed(t: Throwable)
 }
@@ -128,8 +131,8 @@ internal class MoongchiPickerDialog private constructor(
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             kotlin.runCatching {
                 val uriList = loadMedia(mediaType, maxVisibleMediaCount)
-                withContext(Dispatchers.Main) {
-                    for (uri in uriList.reversed()) {
+                for (uri in uriList.reversed()) {
+                    withContext(Dispatchers.Main) {
                         mediaItemRecyclerViewAdapter.addMedia(Media(uri, mediaType))
                     }
                 }
