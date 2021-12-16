@@ -24,7 +24,7 @@ internal interface MoongchiPickerDialogListener : Serializable {
     fun onSubmitMedia(uris: List<Uri>)
     fun onClickCamera()
     fun onClickGallery()
-    fun onFailed(t : Throwable)
+    fun onFailed(t: Throwable)
 }
 
 internal class MoongchiPickerDialog private constructor(
@@ -52,7 +52,7 @@ internal class MoongchiPickerDialog private constructor(
             arguments?.getSerializable(EXTRA_MEDIA_PICKER_LISTENER) as? MoongchiPickerDialogListener ?: return
         val maxSelectableMediaCount = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT) ?: 1
         val mediaType = arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: return
-        val maxVisibleMediaCount =arguments?.getInt(EXTRA_MAX_VISIBLE_MEDIA_COUNT) ?: MAX_VISIBLE_MEDIA_COUNT
+        val maxVisibleMediaCount = arguments?.getInt(EXTRA_MAX_VISIBLE_MEDIA_COUNT) ?: MAX_VISIBLE_MEDIA_COUNT
 
         if (maxSelectableMediaCount <= 1) {
             binding.selectedMediaFrame.visibility = View.GONE
@@ -65,6 +65,7 @@ internal class MoongchiPickerDialog private constructor(
 
 
         val selectedMediaList = MutableLiveData<MutableList<Media>>(mutableListOf())
+
         val mediaItemRecyclerViewAdapter = MoongchiPickerRecyclerViewAdapter(
             maxSelectableMediaCount,
             selectedMediaList,
@@ -212,7 +213,7 @@ internal class MoongchiPickerDialog private constructor(
             mediaType: PetMediaType,
             moongchiPickerDialogListener: MoongchiPickerDialogListener,
             maxSelectableMediaCount: Int = 1,
-            maxVisibleMediaCount : Int = MAX_VISIBLE_MEDIA_COUNT
+            maxVisibleMediaCount: Int = MAX_VISIBLE_MEDIA_COUNT
         ): MoongchiPickerDialog {
             val args = Bundle()
             args.putSerializable(EXTRA_MEDIA_PICKER_LISTENER, moongchiPickerDialogListener)
