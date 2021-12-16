@@ -7,7 +7,6 @@
 
     <application>
         <provider
-
             android:name="com.moongchipicker.util.MoongchiFileProvider"
             android:authorities="${applicationId}.com.moongchipicker.fileprovider"
             android:exported="false"
