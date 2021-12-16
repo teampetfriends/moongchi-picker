@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -19,11 +20,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.Serializable
+import kotlin.jvm.Throws
 
 internal interface MoongchiPickerDialogListener : Serializable {
+    @MainThread
     fun onSubmitMedia(uris: List<Uri>)
+
+    @MainThread
     fun onClickCamera()
+
+    @MainThread
     fun onClickGallery()
+
+    @MainThread
     fun onFailed(t: Throwable)
 }
 
@@ -46,7 +55,6 @@ internal class MoongchiPickerDialog private constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         val moongchiPickerDialogListener =
             arguments?.getSerializable(EXTRA_MEDIA_PICKER_LISTENER) as? MoongchiPickerDialogListener ?: return
@@ -85,6 +93,11 @@ internal class MoongchiPickerDialog private constructor(
                     moongchiPickerDialogListener.onSubmitMedia(listOf(uri))
                     dismiss()
                 }
+
+                override fun onFailed(t: Throwable) {
+                    moongchiPickerDialogListener.onFailed(t)
+                    dismiss()
+                }
             })
 
         binding.recyclerMoongchiPicker.adapter = mediaItemRecyclerViewAdapter
@@ -97,10 +110,15 @@ internal class MoongchiPickerDialog private constructor(
                 binding.selectedMediaPlaceholder.visibility = View.VISIBLE
             }
 
-            updateSelectedImageLayout(it) { deselectedMedia ->
-                selectedMediaList.value =
-                    selectedMediaList.value.toSafe().toMutableList().apply { remove(deselectedMedia) }
+            kotlin.runCatching {
+                updateSelectedImageLayout(it) { deselectedMedia ->
+                    selectedMediaList.value =
+                        selectedMediaList.value.toSafe().toMutableList().apply { remove(deselectedMedia) }
+                }
+            }.onFailure { t ->
+                moongchiPickerDialogListener.onFailed(t)
             }
+
         })
 
         binding.submit.setOnClickListener {
@@ -109,25 +127,25 @@ internal class MoongchiPickerDialog private constructor(
         }
 
 
-        kotlin.runCatching {
-            loadMediaFileFromStorage(mediaType, maxVisibleMediaCount) {
-                //most recently modified file comes first
-                for (uri in it.reversed()) {
-                    addMediaToAdapter(
-                        mediaType,
-                        uri,
-                        mediaItemRecyclerViewAdapter
-                    )
+
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            kotlin.runCatching {
+                val uriList = loadMedia(mediaType, maxVisibleMediaCount)
+                for (uri in uriList.reversed()) {
+                    withContext(Dispatchers.Main) {
+                        mediaItemRecyclerViewAdapter.addMedia(Media(uri, mediaType))
+                    }
+                }
+            }.onFailure {
+                withContext(Dispatchers.Main) {
+                    moongchiPickerDialogListener.onFailed(it)
                 }
             }
-        }.onFailure {
-            moongchiPickerDialogListener.onFailed(it)
         }
-
-
     }
 
 
+    @Throws
     private fun updateSelectedImageLayout(mediaList: List<Media>, onDeselect: (Media) -> Unit) {
         binding.selectedMedia.removeAllViews()
         for (media in mediaList) {
@@ -141,20 +159,7 @@ internal class MoongchiPickerDialog private constructor(
         }
     }
 
-
-    private fun loadMediaFileFromStorage(
-        mediaType: PetMediaType,
-        maxMediaSize: Int,
-        onLoaded: suspend (List<Uri>) -> Unit
-    ) {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            requireContext().apply {
-                onLoaded(loadMedia(mediaType, maxMediaSize))
-            }
-        }
-    }
-
-
+    @Throws
     private suspend fun loadMedia(mediaType: PetMediaType, maxMediaCount: Int): List<Uri> {
         val fromExternal = loadMediaFromExternalStorage(mediaType, maxMediaCount)
         val imageRemain = maxMediaCount - fromExternal.size
@@ -165,6 +170,7 @@ internal class MoongchiPickerDialog private constructor(
         }
     }
 
+    @Throws
     private suspend fun loadMediaFromExternalStorage(
         mediaType: PetMediaType,
         maxMediaSize: Int
@@ -175,6 +181,7 @@ internal class MoongchiPickerDialog private constructor(
         }
     }
 
+    @Throws
     private suspend fun loadMediaFromInternalStorage(
         mediaType: PetMediaType,
         maxMediaSize: Int
@@ -182,19 +189,6 @@ internal class MoongchiPickerDialog private constructor(
         return when (mediaType) {
             PetMediaType.IMAGE -> requireContext().loadImagesFromInternalStorage(maxMediaSize)
             PetMediaType.VIDEO -> requireContext().loadVideosFromInternalStorage(maxMediaSize)
-        }
-    }
-
-
-    private suspend fun addMediaToAdapter(
-        mediaType: PetMediaType,
-        uri: Uri,
-        moongchiItemAdapter: MoongchiPickerRecyclerViewAdapter
-    ) {
-        withContext(Dispatchers.IO) {
-            withContext(Dispatchers.Main) {
-                moongchiItemAdapter.addMedia(Media(uri, mediaType))
-            }
         }
     }
 

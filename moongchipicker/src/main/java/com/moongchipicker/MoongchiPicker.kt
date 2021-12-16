@@ -4,21 +4,26 @@ import android.Manifest
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.moongchipicker.util.Logger
 import com.moongchipicker.util.PermissionDeniedException
 import com.moongchipicker.util.registerPermissionRequestLauncher
 import com.moongchipicker.util.toDebugString
 
 interface MoongchiPickerListener {
+    @MainThread
     fun onSubmitMedia(contentUris: List<Uri>)
+    @MainThread
     fun onFailed(t: Throwable)
 
     /**
      * called when user select media over limit from gallery
      * @see [MoongchiPicker]
      */
+    @MainThread
     fun onSelectedMediaCountOverLimit(limit: Int) {
 
     }
@@ -44,52 +49,57 @@ class MoongchiPicker(
     moongchiPickerListener: MoongchiPickerListener
 ) {
 
-    private val request: () -> Unit
+    private var request: () -> Unit =
+        { Logger.e("fail to initialize moongchiPicker. check [MoongchiPickerListener.onFailed]") }
 
     init {
 
-        val moongchiPickerDialogListener = MoongchiPickerDelegate(activity).registerMediaPickRequest(
-            mediaType,
-            allowMultiple,
-            maxSelectableMediaCountBuilder,
-            moongchiPickerListener
-        )
-
-        fun createMoongchiPickerDialog(): MoongchiPickerDialog {
-            val maxSelectableMediaCount = if (allowMultiple) {
-                maxSelectableMediaCountBuilder()
-            } else {
-                1
-            }
-            return MoongchiPickerDialog.newInstance(
+        kotlin.runCatching {
+            val moongchiPickerDialogListener = MoongchiPickerDelegate(activity).registerMediaPickRequest(
                 mediaType,
-                moongchiPickerDialogListener,
-                maxSelectableMediaCount,
-                maxVisibleMediaCount
+                allowMultiple,
+                maxSelectableMediaCountBuilder,
+                moongchiPickerListener
             )
-        }
 
-        fun createShowMoongchiPickerWithPermissionDelegate(): () -> Unit {
-            val mediaPermissions = arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-            val launcher = activity.registerPermissionRequestLauncher(
-                permissionsToRequest = mediaPermissions,
-                onPermissionGranted = {
-                    createMoongchiPickerDialog().show(fragmentManager, null)
-                },
-                withDeniedPermissions = {
-                    moongchiPickerListener.onFailed(PermissionDeniedException(it))
+            fun createMoongchiPickerDialog(): MoongchiPickerDialog {
+                val maxSelectableMediaCount = if (allowMultiple) {
+                    maxSelectableMediaCountBuilder()
+                } else {
+                    1
                 }
-            )
-            return { launcher.launch() }
-        }
+                return MoongchiPickerDialog.newInstance(
+                    mediaType,
+                    moongchiPickerDialogListener,
+                    maxSelectableMediaCount,
+                    maxVisibleMediaCount
+                )
+            }
 
-        request = if (allowPermissionRequest) {
-            createShowMoongchiPickerWithPermissionDelegate()
-        } else {
-            { createMoongchiPickerDialog().show(fragmentManager, null) }
+            fun createShowMoongchiPickerWithPermissionDelegate(): () -> Unit {
+                val mediaPermissions = arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+                val launcher = activity.registerPermissionRequestLauncher(
+                    permissionsToRequest = mediaPermissions,
+                    onPermissionGranted = {
+                        createMoongchiPickerDialog().show(fragmentManager, null)
+                    },
+                    withDeniedPermissions = {
+                        moongchiPickerListener.onFailed(PermissionDeniedException(it))
+                    }
+                )
+                return { launcher.launch() }
+            }
+
+            request = if (allowPermissionRequest) {
+                createShowMoongchiPickerWithPermissionDelegate()
+            } else {
+                { createMoongchiPickerDialog().show(fragmentManager, null) }
+            }
+        }.onFailure {
+            moongchiPickerListener.onFailed(it)
         }
     }
 
@@ -113,7 +123,16 @@ fun AppCompatActivity.createMoongchiPicker(
     maxMediaCountBuilder: () -> Int = { 1 },
     maxVisibleMediaCount: Int = MoongchiPickerDialog.MAX_VISIBLE_MEDIA_COUNT,
     moongchiPickerListener: MoongchiPickerListener
-) = MoongchiPicker(this, supportFragmentManager, allowPermissionRequest, mediaType, allowMultiple, maxMediaCountBuilder, maxVisibleMediaCount, moongchiPickerListener)
+) = MoongchiPicker(
+    this,
+    supportFragmentManager,
+    allowPermissionRequest,
+    mediaType,
+    allowMultiple,
+    maxMediaCountBuilder,
+    maxVisibleMediaCount,
+    moongchiPickerListener
+)
 
 
 /**
@@ -130,4 +149,13 @@ fun Fragment.createMoongchiPicker(
     maxMediaCountBuilder: () -> Int = { 1 },
     maxVisibleMediaCount: Int = MoongchiPickerDialog.MAX_VISIBLE_MEDIA_COUNT,
     moongchiPickerListener: MoongchiPickerListener
-) = MoongchiPicker(requireActivity(), childFragmentManager, allowPermissionRequest, mediaType, allowMultiple, maxMediaCountBuilder, maxVisibleMediaCount, moongchiPickerListener)
+) = MoongchiPicker(
+    requireActivity(),
+    childFragmentManager,
+    allowPermissionRequest,
+    mediaType,
+    allowMultiple,
+    maxMediaCountBuilder,
+    maxVisibleMediaCount,
+    moongchiPickerListener
+)
