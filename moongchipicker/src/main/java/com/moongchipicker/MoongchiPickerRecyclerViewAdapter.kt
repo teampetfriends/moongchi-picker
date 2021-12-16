@@ -24,6 +24,11 @@ internal interface MediaItemClickListener {
      *  the uri submitted immediately
      */
     fun onSubmit(uri: Uri)
+
+    /**
+     * for instance, fail to load bimap from [Media.uri]
+     */
+    fun onFailed(t: Throwable)
 }
 
 
@@ -115,7 +120,12 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setPadding(0)
 
                 val currentMedia = mediaList.getOrNull(position) ?: return
-                mediaImageView.setImageBitmap(currentMedia.getBitmap(context))
+
+                kotlin.runCatching {
+                    mediaImageView.setImageBitmap(currentMedia.getBitmap(context))
+                }.onFailure {
+                    onMediaItemClickListener.onFailed(it)
+                }
 
                 if (selectedMediaList.value?.contains(currentMedia).toSafe()) {
                     //선택표시
@@ -143,7 +153,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                         return@setOnClickListener
                     }
                     //when user click selected tile, then tile should removed from selectedMediaList
-                     if (selectedMediaList.value?.contains(currentMedia).toSafe()) {
+                    if (selectedMediaList.value?.contains(currentMedia).toSafe()) {
                         selectedMediaList.value = selectedMediaList.value.toSafe().toMutableList()
                             .apply { remove(currentMedia) }
 
@@ -179,7 +189,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
         notifyItemInserted(mediaList.size - 1)
     }
 
-    companion object{
+    companion object {
         private const val ICON_PADDING = 115
     }
 }

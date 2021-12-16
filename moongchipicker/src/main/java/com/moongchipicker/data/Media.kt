@@ -5,11 +5,15 @@ import android.graphics.Bitmap
 import android.net.Uri
 import com.moongchipicker.PetMediaType
 import com.moongchipicker.util.BitmapHelper
+import java.io.IOException
+import java.lang.Exception
+import kotlin.jvm.Throws
 
 internal data class Media(
     val uri: Uri,
     val mediaType : PetMediaType
 ) {
+    @Throws
     fun getBitmap(context: Context): Bitmap? {
         return when(mediaType){
             PetMediaType.IMAGE-> BitmapHelper.getBitmapFromUri(uri, context.contentResolver, BitmapHelper.BitmapSize.SMALL)
