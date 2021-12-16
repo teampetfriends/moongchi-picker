@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val moongchiPicker = createMoongchiPicker(
-            mediaType = PetMediaType.VIDEO,
+            mediaType = PetMediaType.IMAGE,
             allowPermissionRequest = true,
             allowMultiple = true,
             maxMediaCountBuilder = { 3 },

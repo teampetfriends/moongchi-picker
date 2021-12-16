@@ -9,7 +9,7 @@
         <provider
 
             android:name="com.moongchipicker.util.MoongchiFileProvider"
-            android:authorities="com.moongchipicker.fileprovider"
+            android:authorities="${applicationId}.com.moongchipicker.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
