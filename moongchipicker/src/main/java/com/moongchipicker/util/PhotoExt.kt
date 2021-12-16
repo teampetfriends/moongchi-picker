@@ -52,7 +52,7 @@ internal fun ComponentActivity.registerTakeVideoLauncher(
 }
 
 internal fun Context.getContentUriFromFile(file: File): Uri =
-    FileProvider.getUriForFile(this, "com.moongchipicker.fileprovider", file)
+    FileProvider.getUriForFile(this, applicationContext.packageName + ".com.moongchipicker.fileprovider", file)
 
 
 internal fun Context.createImageFilePrivate(
