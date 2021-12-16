@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
-import com.moongchipicker.databinding.ItemSelectedMediaBinding
+import com.moongchipicker.databinding.MoongchiItemSelectedMediaBinding
 import com.moongchipicker.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,8 +59,8 @@ internal class MoongchiPickerDialog private constructor(
             binding.submit.visibility = View.GONE
         }
         when (mediaType) {
-            PetMediaType.IMAGE -> binding.title.text = getString(R.string.pick_image)
-            PetMediaType.VIDEO -> binding.title.text = getString(R.string.pick_video)
+            PetMediaType.IMAGE -> binding.title.text = getString(R.string.mc_pick_image)
+            PetMediaType.VIDEO -> binding.title.text = getString(R.string.mc_pick_video)
         }
 
 
@@ -131,7 +131,7 @@ internal class MoongchiPickerDialog private constructor(
         binding.selectedMedia.removeAllViews()
         for (media in mediaList) {
             val itemBinding =
-                ItemSelectedMediaBinding.inflate(layoutInflater, binding.selectedMedia, false)
+                MoongchiItemSelectedMediaBinding.inflate(layoutInflater, binding.selectedMedia, false)
             itemBinding.media.setImageBitmap(media.getBitmap(requireContext()))
             binding.selectedMedia.addView(itemBinding.root)
             itemBinding.remove.setOnClickListener {

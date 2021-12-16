@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="pef_transparent">#00000000</color>
-    <color name="pet_black">#000000</color>
-    <color name="pet_dark_gray">#A9A9A9</color>
-    <color name="pet_deep_sky_blue">#00bfff</color>
-    <color name="pet_black_translucent">#80000000</color>
-    <color name="pet_white">#FFFFFF</color>
-    <color name="pet_light_gray">#D3D3D3</color>
-    <color name="pet_bright_gray">#F4F4F4</color>
+    <color name="mc_transparent">#00000000</color>
+    <color name="mc_black">#000000</color>
+    <color name="mc_dark_gray">#A9A9A9</color>
+    <color name="mc_deep_sky_blue">#00bfff</color>
+    <color name="mc_black_translucent">#80000000</color>
+    <color name="mc_white">#FFFFFF</color>
+    <color name="mc_light_gray">#D3D3D3</color>
+    <color name="mc_bright_gray">#F4F4F4</color>
 
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="mc_purple_200">#FFBB86FC</color>
+    <color name="mc_purple_500">#FF6200EE</color>
+    <color name="mc_purple_700">#FF3700B3</color>
+    <color name="mc_teal_200">#FF03DAC5</color>
+    <color name="mc_teal_700">#FF018786</color>
 </resources>

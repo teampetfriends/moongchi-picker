@@ -3,6 +3,7 @@ package com.petfriends.myapplication
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.moongchipicker.MoongchiPickerListener
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val moongchiPicker = createMoongchiPicker(
-            mediaType = PetMediaType.IMAGE,
+            mediaType = PetMediaType.VIDEO,
             allowPermissionRequest = true,
             allowMultiple = true,
             maxMediaCountBuilder = { 3 },
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onSelectedMediaCountOverLimit(limit: Int) {
                     super.onSelectedMediaCountOverLimit(limit)
+
                 }
             })
 

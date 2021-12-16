@@ -12,7 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.moongchipicker.data.Media
-import com.moongchipicker.databinding.ItemMediaBinding
+import com.moongchipicker.databinding.MoongchiItemMediaBinding
 import com.moongchipicker.util.toSafe
 
 internal interface MediaItemClickListener {
@@ -37,7 +37,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
     //Photo.empty() is placeholder for camera, gallery tile
     private var mediaList = mutableListOf(Media.empty(), Media.empty())
 
-    class ViewHolder(val binding: ItemMediaBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: MoongchiItemMediaBinding) : RecyclerView.ViewHolder(binding.root)
 
     init {
         selectedMediaList.observe(lifecycleOwner, Observer {
@@ -46,7 +46,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemMediaBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return ViewHolder(MoongchiItemMediaBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -67,7 +67,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setBackgroundColor(
                     ResourcesCompat.getColor(
                         context.resources,
-                        R.color.pet_black,
+                        R.color.mc_black,
                         null
                     )
                 )
@@ -77,7 +77,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setColorFilter(
                     ResourcesCompat.getColor(
                         context.resources,
-                        R.color.pef_transparent,
+                        R.color.mc_transparent,
                         null
                     )
                 )
@@ -96,7 +96,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setBackgroundColor(
                     ResourcesCompat.getColor(
                         context.resources,
-                        R.color.pet_light_gray,
+                        R.color.mc_light_gray,
                         null
                     )
                 )
@@ -106,7 +106,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                 mediaImageView.setColorFilter(
                     ResourcesCompat.getColor(
                         context.resources,
-                        R.color.pef_transparent,
+                        R.color.mc_transparent,
                         null
                     )
                 )
@@ -122,7 +122,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                     mediaImageView.setColorFilter(
                         ResourcesCompat.getColor(
                             context.resources,
-                            R.color.pet_black_translucent,
+                            R.color.mc_black_translucent,
                             null
                         )
                     )
@@ -130,7 +130,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                     mediaImageView.setColorFilter(
                         ResourcesCompat.getColor(
                             context.resources,
-                            R.color.pef_transparent,
+                            R.color.mc_transparent,
                             null
                         )
                     )
@@ -158,7 +158,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                         else {
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.err_select_over_limit),
+                                context.getString(R.string.mc_err_select_over_limit),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
