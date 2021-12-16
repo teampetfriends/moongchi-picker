@@ -4,6 +4,7 @@ import android.Manifest
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -13,13 +14,16 @@ import com.moongchipicker.util.registerPermissionRequestLauncher
 import com.moongchipicker.util.toDebugString
 
 interface MoongchiPickerListener {
+    @MainThread
     fun onSubmitMedia(contentUris: List<Uri>)
+    @MainThread
     fun onFailed(t: Throwable)
 
     /**
      * called when user select media over limit from gallery
      * @see [MoongchiPicker]
      */
+    @MainThread
     fun onSelectedMediaCountOverLimit(limit: Int) {
 
     }

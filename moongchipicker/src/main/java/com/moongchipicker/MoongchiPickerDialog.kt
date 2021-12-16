@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -22,9 +23,13 @@ import java.io.Serializable
 import kotlin.jvm.Throws
 
 internal interface MoongchiPickerDialogListener : Serializable {
+    @MainThread
     fun onSubmitMedia(uris: List<Uri>)
+    @MainThread
     fun onClickCamera()
+    @MainThread
     fun onClickGallery()
+    @MainThread
     fun onFailed(t: Throwable)
 }
 
@@ -88,6 +93,7 @@ internal class MoongchiPickerDialog private constructor(
 
                 override fun onFailed(t: Throwable) {
                     moongchiPickerDialogListener.onFailed(t)
+                    dismiss()
                 }
             })
 
