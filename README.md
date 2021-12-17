@@ -1,7 +1,7 @@
 <h1 align="center">MoongchiPicker</h1>
 
 <p align="center">
-<img alt="Google" src="https://skydoves.github.io/badges/google-devlib.svg"/></br>
+<img src="https://img.shields.io/badge/-Android-FA7343?style=flat&logo=Android"/>
 <img alt="License" src="https://img.shields.io/badge/License-MIT-blue.svg"/>
 <img alt="API" src="https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat"/>
 <img alt="Version" src="https://jitpack.io/v/teampetfriends/moongchi-picker.svg"/>
