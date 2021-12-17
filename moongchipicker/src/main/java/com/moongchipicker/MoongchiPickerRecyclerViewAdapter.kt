@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.MoongchiItemMediaBinding
+import com.moongchipicker.util.dpToPx
 import com.moongchipicker.util.toSafe
 
 internal interface MediaItemClickListener {
@@ -73,7 +74,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                         null
                     )
                 )
-                mediaImageView.setPadding(ICON_PADDING)
+                mediaImageView.setPadding(mediaImageView.context.dpToPx(ICON_PADDING_IN_DP.toFloat()))
                 mediaImageView.setBackgroundColor(
                     ResourcesCompat.getColor(
                         context.resources,
@@ -102,7 +103,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                         null
                     )
                 )
-                mediaImageView.setPadding(ICON_PADDING)
+                mediaImageView.setPadding(mediaImageView.context.dpToPx(ICON_PADDING_IN_DP.toFloat()))
                 mediaImageView.setBackgroundColor(
                     ResourcesCompat.getColor(
                         context.resources,
@@ -195,6 +196,6 @@ internal class MoongchiPickerRecyclerViewAdapter(
     }
 
     companion object {
-        private const val ICON_PADDING = 115
+        private const val ICON_PADDING_IN_DP = 35
     }
 }
