@@ -63,9 +63,8 @@ internal fun Context.getContentUriFromFile(file: File): Uri =
 internal fun Context.createImageFilePrivate(
     prefix: String = ""
 ): File {
-    val imageFileFromExternalStorage = createImageFileToPrivateExternalStorage(prefix)
-    return if (isExternalStorageWritable() && imageFileFromExternalStorage != null) {
-        imageFileFromExternalStorage
+    return if (isExternalStorageWritable()) {
+        createImageFileToPrivateExternalStorage(prefix) ?: createImageFileToInternalStorage(prefix)
     } else {
         createImageFileToInternalStorage(prefix)
     }
@@ -75,9 +74,8 @@ internal fun Context.createImageFilePrivate(
 internal fun Context.createVideoFilePrivate(
     prefix: String = ""
 ): File {
-    val videoFileFromExternalStorage = createVideoFileToPrivateExternalStorage(prefix)
-    return if (isExternalStorageWritable() && videoFileFromExternalStorage != null) {
-        videoFileFromExternalStorage
+    return if (isExternalStorageWritable()) {
+        createVideoFileToPrivateExternalStorage(prefix) ?: createVideoFileToInternalStorage(prefix)
     } else {
         createVideoFileToInternalStorage(prefix)
     }
