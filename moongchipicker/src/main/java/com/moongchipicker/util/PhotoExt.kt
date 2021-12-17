@@ -58,9 +58,8 @@ internal fun Context.getContentUriFromFile(file: File): Uri =
 internal fun Context.createImageFilePrivate(
     prefix: String = ""
 ): File {
-    val imageFileFromExternalStorage = createImageFileToPrivateExternalStorage(prefix)
-    return if (isExternalStorageWritable() && imageFileFromExternalStorage != null) {
-        imageFileFromExternalStorage
+    return if (isExternalStorageWritable()) {
+        createImageFileToPrivateExternalStorage(prefix) ?: createImageFileToInternalStorage(prefix)
     } else {
         createImageFileToInternalStorage(prefix)
     }
