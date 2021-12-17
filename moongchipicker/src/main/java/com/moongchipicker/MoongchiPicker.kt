@@ -2,16 +2,16 @@ package com.moongchipicker
 
 import android.Manifest
 import android.net.Uri
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.moongchipicker.util.*
 import com.moongchipicker.util.Logger
-import com.moongchipicker.util.PermissionDeniedException
 import com.moongchipicker.util.registerPermissionRequestLauncher
-import com.moongchipicker.util.toDebugString
 
 interface MoongchiPickerListener {
     @MainThread
@@ -55,7 +55,7 @@ class MoongchiPicker(
     init {
 
         kotlin.runCatching {
-            val moongchiPickerDialogListener = MoongchiPickerDelegate(activity).registerMediaPickRequest(
+            val moongchiPickerDialogListener = MoongchiPickerDelegate(activity).registerMoongchiPickRequest(
                 mediaType,
                 allowMultiple,
                 maxSelectableMediaCountBuilder,
@@ -77,10 +77,17 @@ class MoongchiPicker(
             }
 
             fun createShowMoongchiPickerWithPermissionDelegate(): () -> Unit {
-                val mediaPermissions = arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
+                val mediaPermissions = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                }else{
+                    arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                }
                 val launcher = activity.registerPermissionRequestLauncher(
                     permissionsToRequest = mediaPermissions,
                     onPermissionGranted = {

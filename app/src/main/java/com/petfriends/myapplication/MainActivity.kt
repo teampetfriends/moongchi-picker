@@ -3,7 +3,6 @@ package com.petfriends.myapplication
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.moongchipicker.MoongchiPickerListener
@@ -13,9 +12,10 @@ import com.petfriends.myapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private val binding by lazy{
+    private val binding by lazy {
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
             allowMultiple = true,
             maxMediaCountBuilder = { 3 },
             maxVisibleMediaCount = 20,
-            moongchiPickerListener = object : MoongchiPickerListener{
+            moongchiPickerListener = object : MoongchiPickerListener {
                 override fun onSubmitMedia(contentUris: List<Uri>) {
-                    if(contentUris.isEmpty()){
+                    if (contentUris.isEmpty()) {
                         return
                     }
                     binding.iv.setImageBitmap(BitmapHelper.getBitmapFromUri(contentUris.first(), contentResolver))
@@ -46,6 +46,6 @@ class MainActivity : AppCompatActivity() {
         binding.iv.setOnClickListener {
             moongchiPicker.show()
         }
-
     }
+
 }
