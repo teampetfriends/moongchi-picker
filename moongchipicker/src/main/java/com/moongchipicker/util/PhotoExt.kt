@@ -68,9 +68,8 @@ internal fun Context.createImageFilePrivate(
 internal fun Context.createVideoFilePrivate(
     prefix: String = ""
 ): File {
-    val videoFileFromExternalStorage = createVideoFileToPrivateExternalStorage(prefix)
-    return if (isExternalStorageWritable() && videoFileFromExternalStorage != null) {
-        videoFileFromExternalStorage
+    return if (isExternalStorageWritable()) {
+        createVideoFileToPrivateExternalStorage(prefix) ?: createVideoFileToInternalStorage(prefix)
     } else {
         createVideoFileToInternalStorage(prefix)
     }
