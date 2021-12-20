@@ -176,8 +176,8 @@ internal class MoongchiPickerDialog private constructor(
         maxMediaSize: Int
     ): List<Uri> {
         return when (mediaType) {
-            PetMediaType.IMAGE -> requireContext().loadImagesFromExternalStorage(maxMediaSize)
-            PetMediaType.VIDEO -> requireContext().loadVideosFromExternalStorage(maxMediaSize)
+            PetMediaType.IMAGE -> requireContext().loadImagesFromPublicExternalStorage(maxMediaSize)
+            PetMediaType.VIDEO -> requireContext().loadVideosFromPublicExternalStorage(maxMediaSize)
         }
     }
 

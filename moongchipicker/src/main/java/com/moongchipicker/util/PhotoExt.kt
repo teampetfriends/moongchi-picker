@@ -7,12 +7,14 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import kotlin.jvm.Throws
 import kotlin.math.min
 
 
@@ -20,6 +22,7 @@ import kotlin.math.min
  * this method should called on [AppCompatActivity.onCreate]
  * because this method create file from context and use [AppCompatActivity.registerForActivityResult]
  */
+@Throws
 internal fun ComponentActivity.registerTakePictureLauncher(
     onSuccess: (fileUri: Uri) -> Unit,
     onFailed: (Throwable) -> Unit
@@ -36,6 +39,7 @@ internal fun ComponentActivity.registerTakePictureLauncher(
 }
 
 
+@Throws
 internal fun ComponentActivity.registerTakeVideoLauncher(
     onSuccess: (fileUri: Uri) -> Unit,
     onFailed: (Throwable) -> Unit
@@ -51,10 +55,11 @@ internal fun ComponentActivity.registerTakeVideoLauncher(
     }.toStatefulActivityResultLauncher(contentUri)
 }
 
+@Throws
 internal fun Context.getContentUriFromFile(file: File): Uri =
     FileProvider.getUriForFile(this, applicationContext.packageName + ".com.moongchipicker.fileprovider", file)
 
-
+@Throws
 internal fun Context.createImageFilePrivate(
     prefix: String = ""
 ): File {
@@ -65,6 +70,7 @@ internal fun Context.createImageFilePrivate(
     }
 }
 
+@Throws
 internal fun Context.createVideoFilePrivate(
     prefix: String = ""
 ): File {
@@ -78,6 +84,7 @@ internal fun Context.createVideoFilePrivate(
 /**
  * @return uri is sorted ascending order base on modified date
  */
+@Throws
 internal suspend fun Context.loadVideosFromInternalStorage(maxFileCount: Int): List<Uri> {
     return loadFilesFromInternalStorage(".mp4", maxFileCount)
 }
@@ -85,15 +92,16 @@ internal suspend fun Context.loadVideosFromInternalStorage(maxFileCount: Int): L
 /**
  * @return uri is sorted ascending order base on modified date
  */
+@Throws
 internal suspend fun Context.loadImagesFromInternalStorage(maxFileCount: Int): List<Uri> {
     return loadFilesFromInternalStorage(".jpg", maxFileCount)
 }
-
 
 /**
  * @param format : ex ) ".jpg", ".png"
  * @return uri is sorted ascending order base on modified date
  */
+@Throws
 private suspend fun Context.loadFilesFromInternalStorage(
     format: String,
     maxFileCount: Int
@@ -113,7 +121,8 @@ private suspend fun Context.loadFilesFromInternalStorage(
 /**
  * @return uri is sorted ascending order base on modified date
  */
-internal suspend fun Context.loadVideosFromExternalStorage(maxFileCount: Int): List<Uri> {
+@Throws
+internal suspend fun Context.loadVideosFromPublicExternalStorage(maxFileCount: Int): List<Uri> {
     return withContext(Dispatchers.IO) {
         val collection = sdkAndUp(Build.VERSION_CODES.Q) {
             MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
@@ -149,7 +158,8 @@ internal suspend fun Context.loadVideosFromExternalStorage(maxFileCount: Int): L
 /**
  * @return uri is sorted ascending order base on modified date
  */
-internal suspend fun Context.loadImagesFromExternalStorage(maxFileCount: Int): List<Uri> {
+@Throws
+internal suspend fun Context.loadImagesFromPublicExternalStorage(maxFileCount: Int): List<Uri> {
     return withContext(Dispatchers.IO) {
         val collection = sdkAndUp(Build.VERSION_CODES.Q) {
             MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
@@ -182,7 +192,7 @@ internal suspend fun Context.loadImagesFromExternalStorage(maxFileCount: Int): L
     }
 }
 
-
+@Throws
 private fun Context.createImageFileToInternalStorage(
     prefix: String = ""
 ): File {
@@ -196,7 +206,7 @@ private fun Context.createImageFileToInternalStorage(
     )
 }
 
-
+@Throws
 private fun Context.createImageFileToPrivateExternalStorage(
     prefix: String = ""
 ): File? {
@@ -209,6 +219,7 @@ private fun Context.createImageFileToPrivateExternalStorage(
     )
 }
 
+@Throws
 private fun Context.createVideoFileToInternalStorage(
     prefix: String = ""
 ): File {
@@ -222,6 +233,7 @@ private fun Context.createVideoFileToInternalStorage(
     )
 }
 
+@Throws
 private fun Context.createVideoFileToPrivateExternalStorage(
     prefix: String = ""
 ): File? {
@@ -234,11 +246,12 @@ private fun Context.createVideoFileToPrivateExternalStorage(
     )
 }
 
-
+@Throws
 private fun isExternalStorageWritable(): Boolean {
     return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
 }
 
+@Throws
 private fun isExternalStorageReadable(): Boolean {
     return Environment.getExternalStorageState() in
             setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)

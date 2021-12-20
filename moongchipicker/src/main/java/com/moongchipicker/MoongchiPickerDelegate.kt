@@ -29,7 +29,7 @@ internal class MoongchiPickerDelegate(
      * @return [MoongchiPickerDialogListener] has to be set on [MoongchiPickerDialog]
      */
     @Throws
-    fun registerMediaPickRequest(
+    fun registerMoongchiPickRequest(
         mediaType: PetMediaType,
         isAllowMultiple: Boolean,
         maxMediaCountBuilder: () -> Int,
