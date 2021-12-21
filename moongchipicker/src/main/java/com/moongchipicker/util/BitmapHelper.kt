@@ -25,7 +25,7 @@ internal object BitmapHelper {
     }
 
     enum class BitmapSize(val width: Int, val height: Int) {
-        VERY_SMALL(64, 64), SMALL(128, 128), MIDDLE(512, 512), NONE(0, 0)
+        VERY_SMALL(64, 64), SMALL(128, 128), MIDDLE(256, 256), NONE(0, 0)
     }
 
     fun rotateBitmap(bitmap: Bitmap, degree: Float): Bitmap {
