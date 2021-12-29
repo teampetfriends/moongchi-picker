@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <external-files-path name="externalStorage" path="."/>
+    <external-cache-path name="cache_files" path="." />
     <files-path name="internalStorage"  path="."/>
+    <cache-path name="cache" path="."/>
 </paths>

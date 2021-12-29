@@ -36,7 +36,7 @@ internal interface MoongchiPickerDialogListener : Serializable {
     fun onFailed(t: Throwable)
 }
 
-internal class MoongchiPickerDialog private constructor(
+internal class MoongchiPickerDialog (
 ) : BottomSheetDialogFragment() {
 
     private val binding: DialogMoongchiPickerBinding by lazy {
@@ -61,6 +61,12 @@ internal class MoongchiPickerDialog private constructor(
         val maxSelectableMediaCount = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT) ?: 1
         val mediaType = arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: return
         val maxVisibleMediaCount = arguments?.getInt(EXTRA_MAX_VISIBLE_MEDIA_COUNT) ?: MAX_VISIBLE_MEDIA_COUNT
+
+        /**
+         * when click home button, fragment save state (argument). but MoongchiPickerDialogListener is not truly serializable.
+         * so it cause crash when click home button. to prevent it, set null to argument
+         */
+        arguments = null
 
         if (maxSelectableMediaCount <= 1) {
             binding.selectedMediaFrame.visibility = View.GONE
@@ -101,6 +107,7 @@ internal class MoongchiPickerDialog private constructor(
             })
 
         binding.recyclerMoongchiPicker.adapter = mediaItemRecyclerViewAdapter
+
 
 
         selectedMediaList.observe(this, Observer {
