@@ -1,12 +1,11 @@
 package com.moongchipicker
 
 import android.net.Uri
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.MainThread
-import androidx.core.content.res.ResourcesCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
@@ -20,6 +19,7 @@ import com.moongchipicker.util.toSafe
 internal interface MediaItemClickListener {
     @MainThread
     fun onClickCamera()
+
     @MainThread
     fun onClickGallery()
 
@@ -66,61 +66,23 @@ internal class MoongchiPickerRecyclerViewAdapter(
         when (position) {
             //for camera button
             0 -> {
-                mediaImageView.setImageDrawable(
-                    ResourcesCompat.getDrawableForDensity(
-                        context.resources,
-                        R.drawable.moongchi_photo_camera_24,
-                        DisplayMetrics.DENSITY_XHIGH,
-                        null
-                    )
-                )
+                mediaImageView.setImageResource(R.drawable.moongchi_photo_camera_24)
                 mediaImageView.setPadding(mediaImageView.context.dpToPx(ICON_PADDING_IN_DP.toFloat()))
-                mediaImageView.setBackgroundColor(
-                    ResourcesCompat.getColor(
-                        context.resources,
-                        R.color.mc_black,
-                        null
-                    )
-                )
+                mediaImageView.setBackgroundColor(ContextCompat.getColor(context, R.color.mc_black))
                 mediaImageView.setOnClickListener {
                     onMediaItemClickListener.onClickCamera()
                 }
-                mediaImageView.setColorFilter(
-                    ResourcesCompat.getColor(
-                        context.resources,
-                        R.color.mc_transparent,
-                        null
-                    )
-                )
+                mediaImageView.setColorFilter(ContextCompat.getColor(context, R.color.mc_transparent))
             }
             //for gallery button
             1 -> {
-                mediaImageView.setImageDrawable(
-                    ResourcesCompat.getDrawableForDensity(
-                        context.resources,
-                        R.drawable.moongchi_photo_library_24,
-                        DisplayMetrics.DENSITY_XHIGH,
-                        null
-                    )
-                )
+                mediaImageView.setImageResource(R.drawable.moongchi_photo_library_24)
                 mediaImageView.setPadding(mediaImageView.context.dpToPx(ICON_PADDING_IN_DP.toFloat()))
-                mediaImageView.setBackgroundColor(
-                    ResourcesCompat.getColor(
-                        context.resources,
-                        R.color.mc_light_gray,
-                        null
-                    )
-                )
+                mediaImageView.setBackgroundColor(ContextCompat.getColor(context, R.color.mc_light_gray))
                 mediaImageView.setOnClickListener {
                     onMediaItemClickListener.onClickGallery()
                 }
-                mediaImageView.setColorFilter(
-                    ResourcesCompat.getColor(
-                        context.resources,
-                        R.color.mc_transparent,
-                        null
-                    )
-                )
+                mediaImageView.setColorFilter(ContextCompat.getColor(context, R.color.mc_transparent))
             }
             else -> {
                 mediaImageView.setPadding(0)
@@ -135,21 +97,9 @@ internal class MoongchiPickerRecyclerViewAdapter(
 
                 if (selectedMediaList.value?.contains(currentMedia).toSafe()) {
                     //선택표시
-                    mediaImageView.setColorFilter(
-                        ResourcesCompat.getColor(
-                            context.resources,
-                            R.color.mc_black_translucent,
-                            null
-                        )
-                    )
+                    mediaImageView.setColorFilter(ContextCompat.getColor(context, R.color.mc_black_translucent))
                 } else {
-                    mediaImageView.setColorFilter(
-                        ResourcesCompat.getColor(
-                            context.resources,
-                            R.color.mc_transparent,
-                            null
-                        )
-                    )
+                    mediaImageView.setColorFilter(ContextCompat.getColor(context, R.color.mc_transparent))
                 }
 
 
