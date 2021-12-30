@@ -63,12 +63,10 @@ internal fun Context.getContentUriFromFile(file: File): Uri =
 internal fun Context.createImageFilePrivate(
     prefix: String = ""
 ): File {
-    return cacheDir.let {
-        File.createTempFile(
-            "JPEG_${prefix}_", /* prefix */
-            ".jpg", /* suffix */
-            it /* directory */
-        )
+    return if (isExternalStorageWritable()) {
+        createImageFileToPrivateExternalStorage(prefix) ?: createImageFileToInternalStorage(prefix)
+    } else {
+        createImageFileToInternalStorage(prefix)
     }
 }
 
@@ -76,12 +74,10 @@ internal fun Context.createImageFilePrivate(
 internal fun Context.createVideoFilePrivate(
     prefix: String = ""
 ): File {
-    return cacheDir.let {
-        File.createTempFile(
-            "MPEG_${prefix}_", /* prefix */
-            ".mp4", /* suffix */
-            it /* directory */
-        )
+    return if (isExternalStorageWritable()) {
+        createVideoFileToPrivateExternalStorage(prefix) ?: createVideoFileToInternalStorage(prefix)
+    } else {
+        createVideoFileToInternalStorage(prefix)
     }
 }
 
@@ -260,4 +256,5 @@ private fun isExternalStorageReadable(): Boolean {
     return Environment.getExternalStorageState() in
             setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
 }
+
 
