@@ -142,7 +142,9 @@ internal suspend fun Context.loadVideosFromPublicExternalStorage(maxFileCount: I
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
 
             val uris = mutableListOf<Uri>()
-            while (cursor.moveToNext() && uris.size < maxFileCount) {
+            cursor.moveToLast()
+            cursor.moveToNext()
+            while (cursor.moveToPrevious() && uris.size < maxFileCount) {
                 val id = cursor.getLong(idColumn)
                 val contentUri = ContentUris.withAppendedId(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -179,7 +181,9 @@ internal suspend fun Context.loadImagesFromPublicExternalStorage(maxFileCount: I
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
 
             val uris = mutableListOf<Uri>()
-            while (cursor.moveToNext() && uris.size < maxFileCount) {
+            cursor.moveToLast()
+            cursor.moveToNext()
+            while (cursor.moveToPrevious() && uris.size < maxFileCount) {
                 val id = cursor.getLong(idColumn)
                 val contentUri = ContentUris.withAppendedId(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,

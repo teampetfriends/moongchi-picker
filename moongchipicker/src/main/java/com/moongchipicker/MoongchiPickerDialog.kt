@@ -138,7 +138,7 @@ internal class MoongchiPickerDialog (
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             kotlin.runCatching {
                 val uriList = loadMedia(mediaType, maxVisibleMediaCount)
-                for (uri in uriList.reversed()) {
+                for (uri in uriList) {
                     withContext(Dispatchers.Main) {
                         mediaItemRecyclerViewAdapter.addMedia(Media(uri, mediaType))
                     }
