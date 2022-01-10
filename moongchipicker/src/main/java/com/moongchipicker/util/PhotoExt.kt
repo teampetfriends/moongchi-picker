@@ -174,7 +174,7 @@ internal suspend fun Context.loadImagesFromPublicExternalStorage(maxFileCount: I
             projection,
             null,
             null,
-            MediaStore.Video.VideoColumns.DATE_ADDED + " DESC"
+            MediaStore.Images.ImageColumns.DATE_ADDED + " DESC"
         )?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
 
