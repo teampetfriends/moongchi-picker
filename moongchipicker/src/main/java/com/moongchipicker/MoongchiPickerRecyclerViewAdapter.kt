@@ -19,7 +19,6 @@ import com.moongchipicker.util.toSafe
 internal interface MediaItemClickListener {
     @MainThread
     fun onClickCamera()
-
     @MainThread
     fun onClickGallery()
 
@@ -33,7 +32,6 @@ internal interface MediaItemClickListener {
     /**
      * for instance, fail to load bimap from [Media.uri]
      */
-    @MainThread
     fun onFailed(t: Throwable)
 }
 

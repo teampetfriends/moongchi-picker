@@ -35,7 +35,6 @@ internal interface MoongchiPickerDialogListener : Serializable {
     @MainThread
     fun onClickGallery()
 
-    @MainThread
     fun onFailed(t: Throwable)
 }
 

@@ -16,14 +16,12 @@ import com.moongchipicker.util.registerPermissionRequestLauncher
 interface MoongchiPickerListener {
     @MainThread
     fun onSubmitMedia(contentUris: List<Uri>)
-    @MainThread
     fun onFailed(t: Throwable)
 
     /**
      * called when user select media over limit from gallery
      * @see [MoongchiPicker]
      */
-    @MainThread
     fun onSelectedMediaCountOverLimit(limit: Int) {
 
     }
