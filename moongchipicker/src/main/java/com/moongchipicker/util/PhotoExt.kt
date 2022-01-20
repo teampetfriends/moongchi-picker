@@ -137,7 +137,7 @@ internal suspend fun Context.loadVideosFromPublicExternalStorage(maxFileCount: I
             projection,
             null,
             null,
-            MediaStore.Images.Media.DATE_MODIFIED
+            MediaStore.Video.VideoColumns.DATE_ADDED + " DESC"
         )?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
 
@@ -174,7 +174,7 @@ internal suspend fun Context.loadImagesFromPublicExternalStorage(maxFileCount: I
             projection,
             null,
             null,
-            MediaStore.Images.Media.DATE_MODIFIED
+            MediaStore.Images.ImageColumns.DATE_ADDED + " DESC"
         )?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
 
@@ -256,4 +256,5 @@ private fun isExternalStorageReadable(): Boolean {
     return Environment.getExternalStorageState() in
             setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
 }
+
 
