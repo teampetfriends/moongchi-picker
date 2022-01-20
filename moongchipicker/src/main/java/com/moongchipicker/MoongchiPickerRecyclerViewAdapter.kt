@@ -17,23 +17,17 @@ import com.moongchipicker.util.dpToPx
 import com.moongchipicker.util.toSafe
 
 internal interface MediaItemClickListener {
-    @MainThread
     fun onClickCamera()
-
-    @MainThread
     fun onClickGallery()
-
     /**
      *  when [MoongchiPickerRecyclerViewAdapter.maxImageCount] is 1, then once user click media tile
      *  the uri submitted immediately
      */
-    @MainThread
     fun onSubmit(uri: Uri)
 
     /**
      * for instance, fail to load bimap from [Media.uri]
      */
-    @MainThread
     fun onFailed(t: Throwable)
 }
 
