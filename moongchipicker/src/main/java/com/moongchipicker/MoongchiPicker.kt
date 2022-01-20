@@ -14,7 +14,6 @@ import com.moongchipicker.util.Logger
 import com.moongchipicker.util.registerPermissionRequestLauncher
 
 interface MoongchiPickerListener {
-    @MainThread
     fun onSubmitMedia(contentUris: List<Uri>)
     fun onFailed(t: Throwable)
 

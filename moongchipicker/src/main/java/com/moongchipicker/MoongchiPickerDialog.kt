@@ -26,15 +26,9 @@ import java.io.Serializable
 import kotlin.jvm.Throws
 
 internal interface MoongchiPickerDialogListener : Serializable {
-    @MainThread
     fun onSubmitMedia(uris: List<Uri>)
-
-    @MainThread
     fun onClickCamera()
-
-    @MainThread
     fun onClickGallery()
-
     fun onFailed(t: Throwable)
 }
 
