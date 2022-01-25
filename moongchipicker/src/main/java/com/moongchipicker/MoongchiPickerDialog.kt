@@ -2,12 +2,13 @@ package com.moongchipicker
 
 import android.app.Dialog
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.MainThread
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -35,9 +36,7 @@ internal interface MoongchiPickerDialogListener : Serializable {
 internal class MoongchiPickerDialog(
 ) : BottomSheetDialogFragment() {
 
-    private val binding: DialogMoongchiPickerBinding by lazy {
-        DialogMoongchiPickerBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: DialogMoongchiPickerBinding
 
     private var moongchiPickerDialogListener: MoongchiPickerDialogListener? = null
 
@@ -50,6 +49,7 @@ internal class MoongchiPickerDialog(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding = DialogMoongchiPickerBinding.inflate(inflater, container, false)
         binding.recyclerMoongchiPicker.layoutManager =
             GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
         return binding.root
@@ -59,7 +59,7 @@ internal class MoongchiPickerDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(moongchiPickerDialogListener == null){
+        if (moongchiPickerDialogListener == null) {
             dismiss()
             return
         }

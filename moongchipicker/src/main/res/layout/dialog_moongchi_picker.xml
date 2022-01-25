@@ -7,18 +7,16 @@
     <data></data>
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/top_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/title"
@@ -54,10 +52,7 @@
                 android:id="@+id/selected_media_frame"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@color/mc_bright_gray"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/top_bar">
+                android:background="@color/mc_bright_gray">
 
                 <HorizontalScrollView
                     android:id="@+id/selected_media_scroll"
@@ -92,13 +87,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_moongchi_picker"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/selected_media_frame"
-                app:layout_constraintVertical_bias="0.0"
+                android:layout_height="match_parent"
                 tools:background="@color/mc_light_gray" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>
