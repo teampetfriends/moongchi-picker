@@ -96,8 +96,8 @@ android {
 ![alt](demo04.gif)
 >MoongchiPicker supports english and korean
 ## How to use
-> MoongchiPicker must be created on **onCreate** of activity lifecycle. Because it uses context to load file from storage, and use registerForActivityResult which is must be called before onStart
-> MoongchiPicker can be created in Activity and Fragment.
+> MoongchiPicker must be created on **onCreate** of activity lifecycle. Because it uses context to load file from storage, and use registerForActivityResult which is must be called before onStart.
+> And MoongchiPicker can be created in Activity and Fragment.
 
 Due to MoongchiPicker use registerForActivityResult, you have to pass ComponentActivity as argument.
 And pass fragmentManager as argument for showing MoongchiPickerDialog.
