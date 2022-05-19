@@ -11,7 +11,7 @@ internal data class Media(
     val uri: Uri,
     val mediaType : PetMediaType
 ) {
-    @Throws
+
     fun getBitmap(context: Context): Bitmap? {
         return when(mediaType){
             PetMediaType.IMAGE-> BitmapHelper.getBitmapFromUri(uri, context.contentResolver, BitmapHelper.BitmapSize.SMALL)

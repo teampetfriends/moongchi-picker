@@ -24,7 +24,6 @@ internal class MoongchiPickerDelegate(
      * this method should called on [AppCompatActivity.onCreate]
      * @return [MoongchiPickerDialogListener] has to be set on [MoongchiPickerDialog]
      */
-    @Throws
     fun registerMoongchiPickRequest(
         mediaType: PetMediaType,
         isAllowMultiple: Boolean,
@@ -58,7 +57,6 @@ internal class MoongchiPickerDelegate(
         }
     }
 
-    @Throws
     private fun registerCameraRequest(
         mediaType: PetMediaType,
         moongchiPickerListener: MoongchiPickerListener
@@ -79,7 +77,6 @@ internal class MoongchiPickerDelegate(
         }
     }
 
-    @Throws
     private fun registerPickFromGalleryRequest(
         mediaType: PetMediaType,
         allowMultiple: Boolean = false,
@@ -188,7 +185,7 @@ internal class MoongchiPickerDelegate(
         }.toStatefulActivityResultLauncher("video/*")
 
 
-    @Throws
+
     private fun registerTakePictureRequest(
         onSuccess: (Uri) -> Unit,
         onFailed: (Throwable) -> Unit
@@ -198,7 +195,7 @@ internal class MoongchiPickerDelegate(
             onFailed = onFailed
         )
 
-    @Throws
+
     private fun registerTakeVideoRequest(onSuccess: (Uri) -> Unit, onFailed: (Throwable) -> Unit) =
         activity.registerTakeVideoLauncher(
             onSuccess = onSuccess,
