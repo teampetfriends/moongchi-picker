@@ -1,65 +1,109 @@
 package com.moongchipicker.util
 
+import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.net.toFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.IOException
+import java.lang.NullPointerException
 import kotlin.jvm.Throws
 import kotlin.math.min
 
+
+class CustomTakePicture : ActivityResultContract<Unit, Uri?>() {
+    private var uri: Uri? = null
+
+    override fun createIntent(context: Context, input: Unit): Intent {
+        this.uri = kotlin.runCatching {
+            val file = context.createImageFilePrivate()
+            context.getContentUriFromFile(file)
+        }.getOrNull()
+        return Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
+            it.putExtra(MediaStore.EXTRA_OUTPUT, this.uri)
+        }
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+        return if (resultCode == Activity.RESULT_OK) {
+            this.uri
+        } else {
+            uri?.toFile()?.delete()
+            null
+        }
+    }
+}
+
+class CustomTakeVideo : ActivityResultContract<Unit, Uri?>() {
+    private var uri: Uri? = null
+
+    override fun createIntent(context: Context, input: Unit): Intent {
+        this.uri = kotlin.runCatching {
+            val file = context.createVideoFilePrivate()
+            context.getContentUriFromFile(file)
+        }.getOrNull()
+        return Intent(MediaStore.ACTION_VIDEO_CAPTURE).also {
+            it.putExtra(MediaStore.EXTRA_OUTPUT, this.uri)
+        }
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+        return if (resultCode == Activity.RESULT_OK) {
+            this.uri
+        } else {
+            uri?.toFile()?.delete()
+            null
+        }
+    }
+}
 
 /**
  * this method should called on [AppCompatActivity.onCreate]
  * because this method create file from context and use [AppCompatActivity.registerForActivityResult]
  */
-@Throws
 internal fun ComponentActivity.registerTakePictureLauncher(
     onSuccess: (fileUri: Uri) -> Unit,
     onFailed: (Throwable) -> Unit
-): StatefulActivityResultLauncher<Uri> {
-    val contentUri = getContentUriFromFile(createImageFilePrivate())
-
-    return registerForActivityResult(ActivityResultContracts.TakePicture()) { isPictureSaved ->
-        if (isPictureSaved) {
-            onSuccess(contentUri)
+): ActivityResultLauncher<Unit> {
+    return registerForActivityResult(CustomTakePicture()) { uri ->
+        if (uri == null) {
+            onFailed(NullPointerException("TakePicture result in null"))
         } else {
-            onFailed(TakePictureFailedException())
+            onSuccess(uri)
         }
-    }.toStatefulActivityResultLauncher(contentUri)
+    }
 }
 
 
-@Throws
 internal fun ComponentActivity.registerTakeVideoLauncher(
     onSuccess: (fileUri: Uri) -> Unit,
     onFailed: (Throwable) -> Unit
-): StatefulActivityResultLauncher<Uri> {
-    val contentUri = getContentUriFromFile(createVideoFilePrivate())
-
-    return registerForActivityResult(TakeVideoContract()) { isSucceed ->
-        if (isSucceed) {
-            onSuccess(contentUri)
+): ActivityResultLauncher<Unit> {
+    return registerForActivityResult(CustomTakeVideo()) { uri ->
+        if (uri == null) {
+            onFailed(NullPointerException("TakeVideo result in null"))
         } else {
-            onFailed(TakeVideoFailedException())
+            onSuccess(uri)
         }
-    }.toStatefulActivityResultLauncher(contentUri)
+    }
 }
 
-@Throws
 internal fun Context.getContentUriFromFile(file: File): Uri =
     FileProvider.getUriForFile(this, applicationContext.packageName + ".com.moongchipicker.fileprovider", file)
 
-@Throws
 internal fun Context.createImageFilePrivate(
     prefix: String = ""
 ): File {
@@ -70,7 +114,6 @@ internal fun Context.createImageFilePrivate(
     }
 }
 
-@Throws
 internal fun Context.createVideoFilePrivate(
     prefix: String = ""
 ): File {
@@ -84,7 +127,6 @@ internal fun Context.createVideoFilePrivate(
 /**
  * @return uri is sorted ascending order base on modified date
  */
-@Throws
 internal suspend fun Context.loadVideosFromInternalStorage(maxFileCount: Int): List<Uri> {
     return loadFilesFromInternalStorage(".mp4", maxFileCount)
 }
@@ -92,7 +134,6 @@ internal suspend fun Context.loadVideosFromInternalStorage(maxFileCount: Int): L
 /**
  * @return uri is sorted ascending order base on modified date
  */
-@Throws
 internal suspend fun Context.loadImagesFromInternalStorage(maxFileCount: Int): List<Uri> {
     return loadFilesFromInternalStorage(".jpg", maxFileCount)
 }
@@ -101,7 +142,6 @@ internal suspend fun Context.loadImagesFromInternalStorage(maxFileCount: Int): L
  * @param format : ex ) ".jpg", ".png"
  * @return uri is sorted ascending order base on modified date
  */
-@Throws
 private suspend fun Context.loadFilesFromInternalStorage(
     format: String,
     maxFileCount: Int
@@ -121,7 +161,6 @@ private suspend fun Context.loadFilesFromInternalStorage(
 /**
  * @return uri is sorted ascending order base on modified date
  */
-@Throws
 internal suspend fun Context.loadVideosFromPublicExternalStorage(maxFileCount: Int): List<Uri> {
     return withContext(Dispatchers.IO) {
         val collection = sdkAndUp(Build.VERSION_CODES.Q) {
@@ -158,7 +197,6 @@ internal suspend fun Context.loadVideosFromPublicExternalStorage(maxFileCount: I
 /**
  * @return uri is sorted ascending order base on modified date
  */
-@Throws
 internal suspend fun Context.loadImagesFromPublicExternalStorage(maxFileCount: Int): List<Uri> {
     return withContext(Dispatchers.IO) {
         val collection = sdkAndUp(Build.VERSION_CODES.Q) {
@@ -192,13 +230,11 @@ internal suspend fun Context.loadImagesFromPublicExternalStorage(maxFileCount: I
     }
 }
 
-@Throws
 private fun Context.createImageFileToInternalStorage(
     prefix: String = ""
 ): File {
     val storageDir: File = filesDir
 
-    //createTempFile 은 알아서 겹치지않는 이름을 가진 파일을 생성한다.
     return File.createTempFile(
         "JPEG_${prefix}_", /* prefix */
         ".jpg", /* suffix */
@@ -206,7 +242,6 @@ private fun Context.createImageFileToInternalStorage(
     )
 }
 
-@Throws
 private fun Context.createImageFileToPrivateExternalStorage(
     prefix: String = ""
 ): File? {
@@ -219,13 +254,11 @@ private fun Context.createImageFileToPrivateExternalStorage(
     )
 }
 
-@Throws
 private fun Context.createVideoFileToInternalStorage(
     prefix: String = ""
 ): File {
     val storageDir: File = filesDir
 
-    //createTempFile 은 알아서 겹치지않는 이름을 가진 파일을 생성한다.
     return File.createTempFile(
         "MPEG_${prefix}_", /* prefix */
         ".mp4", /* suffix */
@@ -233,7 +266,6 @@ private fun Context.createVideoFileToInternalStorage(
     )
 }
 
-@Throws
 private fun Context.createVideoFileToPrivateExternalStorage(
     prefix: String = ""
 ): File? {
@@ -246,12 +278,12 @@ private fun Context.createVideoFileToPrivateExternalStorage(
     )
 }
 
-@Throws
+
 private fun isExternalStorageWritable(): Boolean {
     return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
 }
 
-@Throws
+
 private fun isExternalStorageReadable(): Boolean {
     return Environment.getExternalStorageState() in
             setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)

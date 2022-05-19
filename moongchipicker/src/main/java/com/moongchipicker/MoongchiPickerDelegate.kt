@@ -2,6 +2,7 @@ package com.moongchipicker
 
 import android.net.Uri
 import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.moongchipicker.util.*
@@ -49,7 +50,7 @@ internal class MoongchiPickerDelegate(
             }
 
             override fun onClickCamera() {
-                cameraRequest.launch()
+                cameraRequest.launch(Unit)
             }
 
             override fun onClickGallery() {
@@ -66,7 +67,7 @@ internal class MoongchiPickerDelegate(
     private fun registerCameraRequest(
         mediaType: PetMediaType,
         moongchiPickerListener: MoongchiPickerListener
-    ): StatefulActivityResultLauncher<Uri> {
+    ): ActivityResultLauncher<Unit> {
         return when (mediaType) {
             PetMediaType.IMAGE -> {
                 registerTakePictureRequest(
