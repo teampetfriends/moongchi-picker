@@ -10,7 +10,6 @@ import android.media.ThumbnailUtils
 import android.net.Uri
 import android.util.LruCache
 import androidx.exifinterface.media.ExifInterface
-import java.lang.Exception
 
 
 internal object BitmapHelper {

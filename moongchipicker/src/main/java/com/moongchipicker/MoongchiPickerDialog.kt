@@ -2,15 +2,20 @@ package com.moongchipicker
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
-import androidx.lifecycle.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
 import com.moongchipicker.databinding.MoongchiItemSelectedMediaBinding
-import com.moongchipicker.util.*
+import com.moongchipicker.util.MediaLoader
+import com.moongchipicker.util.toSafe
 import java.io.Serializable
 
 internal interface MoongchiPickerDialogListener : Serializable {

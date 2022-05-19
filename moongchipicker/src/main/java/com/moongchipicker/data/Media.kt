@@ -6,9 +6,6 @@ import android.net.Uri
 import androidx.recyclerview.widget.DiffUtil
 import com.moongchipicker.PetMediaType
 import com.moongchipicker.util.BitmapHelper
-import java.io.IOException
-import java.lang.Exception
-import kotlin.jvm.Throws
 
 internal data class Media(
     val uri: Uri,

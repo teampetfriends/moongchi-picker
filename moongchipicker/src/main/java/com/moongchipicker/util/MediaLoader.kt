@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.moongchipicker.PetMediaType
 
-class MediaLoader(
+internal class MediaLoader(
     private val context : Context
 ) {
     suspend fun loadMediaFromExternalStorage(

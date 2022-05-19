@@ -1,9 +1,7 @@
 package com.moongchipicker.util
 
 import android.content.Context
-import android.content.res.Resources
 import android.os.Build
-import android.util.TypedValue
 import android.util.DisplayMetrics
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

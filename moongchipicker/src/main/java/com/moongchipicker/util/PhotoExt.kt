@@ -11,20 +11,16 @@ import android.provider.MediaStore
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.IOException
-import java.lang.NullPointerException
-import kotlin.jvm.Throws
 import kotlin.math.min
 
 
-class CustomTakePicture : ActivityResultContract<Unit, Uri?>() {
+internal class CustomTakePicture : ActivityResultContract<Unit, Uri?>() {
     private var uri: Uri? = null
 
     override fun createIntent(context: Context, input: Unit): Intent {
@@ -47,7 +43,7 @@ class CustomTakePicture : ActivityResultContract<Unit, Uri?>() {
     }
 }
 
-class CustomTakeVideo : ActivityResultContract<Unit, Uri?>() {
+internal class CustomTakeVideo : ActivityResultContract<Unit, Uri?>() {
     private var uri: Uri? = null
 
     override fun createIntent(context: Context, input: Unit): Intent {
@@ -142,7 +138,7 @@ internal suspend fun Context.loadImagesFromInternalStorage(maxFileCount: Int): L
  * @param format : ex ) ".jpg", ".png"
  * @return uri is sorted ascending order base on modified date
  */
-private suspend fun Context.loadFilesFromInternalStorage(
+internal suspend fun Context.loadFilesFromInternalStorage(
     format: String,
     maxFileCount: Int
 ): List<Uri> {
@@ -230,7 +226,7 @@ internal suspend fun Context.loadImagesFromPublicExternalStorage(maxFileCount: I
     }
 }
 
-private fun Context.createImageFileToInternalStorage(
+internal fun Context.createImageFileToInternalStorage(
     prefix: String = ""
 ): File {
     val storageDir: File = filesDir
@@ -242,7 +238,7 @@ private fun Context.createImageFileToInternalStorage(
     )
 }
 
-private fun Context.createImageFileToPrivateExternalStorage(
+internal fun Context.createImageFileToPrivateExternalStorage(
     prefix: String = ""
 ): File? {
     val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: return null
@@ -254,7 +250,7 @@ private fun Context.createImageFileToPrivateExternalStorage(
     )
 }
 
-private fun Context.createVideoFileToInternalStorage(
+internal fun Context.createVideoFileToInternalStorage(
     prefix: String = ""
 ): File {
     val storageDir: File = filesDir
@@ -266,7 +262,7 @@ private fun Context.createVideoFileToInternalStorage(
     )
 }
 
-private fun Context.createVideoFileToPrivateExternalStorage(
+internal fun Context.createVideoFileToPrivateExternalStorage(
     prefix: String = ""
 ): File? {
     val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_MOVIES) ?: return null
@@ -279,12 +275,12 @@ private fun Context.createVideoFileToPrivateExternalStorage(
 }
 
 
-private fun isExternalStorageWritable(): Boolean {
+internal fun isExternalStorageWritable(): Boolean {
     return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
 }
 
 
-private fun isExternalStorageReadable(): Boolean {
+internal fun isExternalStorageReadable(): Boolean {
     return Environment.getExternalStorageState() in
             setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
 }

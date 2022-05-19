@@ -5,12 +5,11 @@ import android.net.Uri
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.moongchipicker.util.*
 import com.moongchipicker.util.Logger
+import com.moongchipicker.util.PermissionDeniedException
 import com.moongchipicker.util.registerPermissionRequestLauncher
 
 interface MoongchiPickerListener {
