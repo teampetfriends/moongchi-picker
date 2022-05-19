@@ -16,33 +16,33 @@ class MainActivity : AppCompatActivity() {
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
     }
 
+    val moongchiPicker = createMoongchiPicker(
+        mediaType = PetMediaType.IMAGE,
+        allowPermissionRequest = true,
+        allowMultiple = true,
+        maxMediaCountBuilder = { 3 },
+        maxVisibleMediaCount = 20,
+        moongchiPickerListener = object : MoongchiPickerListener {
+            override fun onSubmitMedia(contentUris: List<Uri>) {
+                if (contentUris.isEmpty()) {
+                    return
+                }
+                binding.iv.setImageBitmap(BitmapHelper.getBitmapFromUri(contentUris.first(), contentResolver))
+            }
+
+            override fun onFailed(t: Throwable) {
+                Log.w("petfriends", t.stackTraceToString())
+            }
+
+            override fun onSelectedMediaCountOverLimit(limit: Int) {
+                super.onSelectedMediaCountOverLimit(limit)
+
+            }
+        })
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val moongchiPicker = createMoongchiPicker(
-            mediaType = PetMediaType.IMAGE,
-            allowPermissionRequest = true,
-            allowMultiple = true,
-            maxMediaCountBuilder = { 3 },
-            maxVisibleMediaCount = 20,
-            moongchiPickerListener = object : MoongchiPickerListener {
-                override fun onSubmitMedia(contentUris: List<Uri>) {
-                    if (contentUris.isEmpty()) {
-                        return
-                    }
-                    binding.iv.setImageBitmap(BitmapHelper.getBitmapFromUri(contentUris.first(), contentResolver))
-                }
-
-                override fun onFailed(t: Throwable) {
-                    Log.w("petfriends", t.stackTraceToString())
-                }
-
-                override fun onSelectedMediaCountOverLimit(limit: Int) {
-                    super.onSelectedMediaCountOverLimit(limit)
-
-                }
-            })
-
         binding.iv.setOnClickListener {
             moongchiPicker.show()
         }

@@ -28,7 +28,7 @@ interface MoongchiPickerListener {
 
 
 /**
- * this class must created on [AppCompatActivity.onCreate]
+ * this class must created before [AppCompatActivity.onStart] because it use [ComponentActivity.registerForActivityResult]
  * @param activity activity to register [ActivityResultContracts] that MoonchiPicker need
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
@@ -114,7 +114,7 @@ class MoongchiPicker(
 }
 
 /**
- * this class must created on [AppCompatActivity.onCreate]
+ * this must called before [AppCompatActivity.onStart] because it use [ComponentActivity.registerForActivityResult]
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
  * @param maxMediaCountBuilder builder for build max selection count for fetching media from gallery
@@ -140,7 +140,7 @@ fun AppCompatActivity.createMoongchiPicker(
 
 
 /**
- * this class must created on [Fragment.onViewCreated]
+ * this must called before [AppCompatActivity.onStart] because it use [ComponentActivity.registerForActivityResult]
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
  * @param maxMediaCountBuilder builder for build max selection count for fetching media from gallery
