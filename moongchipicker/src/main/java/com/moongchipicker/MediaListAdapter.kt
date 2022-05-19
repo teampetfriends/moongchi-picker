@@ -4,19 +4,13 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.MainThread
 import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.MoongchiItemMediaBinding
 import com.moongchipicker.util.dpToPx
-import com.moongchipicker.util.toSafe
-import java.util.*
 
 internal interface MediaItemClickListener {
     fun onClickCamera()
@@ -28,7 +22,7 @@ internal interface MediaItemClickListener {
 
 
     /**
-     *  when [MoongchiPickerRecyclerViewAdapter.maxImageCount] is 1, then once user click media tile
+     *  when [MediaListAdapter.maxImageCount] is 1, then once user click media tile
      *  the uri submitted immediately
      */
     fun onSubmit(uri: Uri)
@@ -40,10 +34,10 @@ internal interface MediaItemClickListener {
 }
 
 
-internal class MoongchiPickerRecyclerViewAdapter(
-    private val maxImageCount: Int = 1,
+internal class MediaListAdapter(
+    private val maxImageCount: Int,
     private val onMediaItemClickListener: MediaItemClickListener,
-) : ListAdapter<Media, MoongchiPickerRecyclerViewAdapter.ViewHolder>(Media.diffUtil) {
+) : ListAdapter<Media, MediaListAdapter.ViewHolder>(Media.diffUtil) {
 
     class ViewHolder(val binding: MoongchiItemMediaBinding) : RecyclerView.ViewHolder(binding.root)
 

@@ -8,6 +8,13 @@
         <variable
             name="vm"
             type="com.moongchipicker.MoongchiPickerDialogViewModel" />
+        <variable
+            name="isImagePicker"
+            type="boolean"/>
+        <variable
+            name="allowMultipleSelection"
+            type="boolean" />
+
     </data>
 
 
@@ -27,7 +34,7 @@
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/mc_picker_title"
+                    android:text="@{isImagePicker ? @string/mc_pick_image : @string/mc_pick_video}"
                     android:layout_margin="20dp"
                     android:textSize="15dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -43,6 +50,7 @@
                     android:layout_marginEnd="20dp"
                     android:gravity="center"
                     android:text="@string/mc_submit"
+                    app:isVisible="@{allowMultipleSelection}"
                     android:textColor="@color/mc_deep_sky_blue"
                     android:textSize="15dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -57,6 +65,7 @@
                 android:id="@+id/selected_media_frame"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+                app:isVisible="@{allowMultipleSelection}"
                 android:background="@color/mc_bright_gray">
 
                 <HorizontalScrollView

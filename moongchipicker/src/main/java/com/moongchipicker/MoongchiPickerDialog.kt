@@ -1,28 +1,17 @@
 package com.moongchipicker
 
-import android.app.Dialog
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.*
-import androidx.annotation.MainThread
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.ViewCompat
-import androidx.core.view.updatePadding
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
 import com.moongchipicker.databinding.MoongchiItemSelectedMediaBinding
 import com.moongchipicker.util.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.Serializable
-import kotlin.jvm.Throws
 
 internal interface MoongchiPickerDialogListener : Serializable {
     fun onSubmitMedia(uris: List<Uri>)
@@ -60,6 +49,9 @@ internal class MoongchiPickerDialog(
         binding.vm = vm
         binding.recyclerMoongchiPicker.layoutManager =
             GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
+        binding.isImagePicker =
+            (arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: PetMediaType.IMAGE) == PetMediaType.IMAGE
+        binding.allowMultipleSelection = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT).toSafe() > 1
         return binding.root
     }
 
@@ -72,22 +64,13 @@ internal class MoongchiPickerDialog(
             return
         }
 
-        val maxSelectableMediaCount = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT) ?: 1
-        val mediaType = arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: return
         val maxVisibleMediaCount = arguments?.getInt(EXTRA_MAX_VISIBLE_MEDIA_COUNT) ?: MAX_VISIBLE_MEDIA_COUNT
+        val mediaType = arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: PetMediaType.IMAGE
+        val maxSelectableMediaCount = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT).toSafe()
 
+        vm.loadMedia(mediaType, maxVisibleMediaCount)
 
-        if (maxSelectableMediaCount <= 1) {
-            binding.selectedMediaFrame.visibility = View.GONE
-            binding.submit.visibility = View.GONE
-        }
-        when (mediaType) {
-            PetMediaType.IMAGE -> binding.title.text = getString(R.string.mc_pick_image)
-            PetMediaType.VIDEO -> binding.title.text = getString(R.string.mc_pick_video)
-        }
-
-
-        val mediaItemRecyclerViewAdapter = MoongchiPickerRecyclerViewAdapter(
+        val mediaListAdapter = MediaListAdapter(
             maxSelectableMediaCount,
             object : MediaItemClickListener {
                 override fun onClickCamera() {
@@ -127,12 +110,12 @@ internal class MoongchiPickerDialog(
                 }
             })
 
-        binding.recyclerMoongchiPicker.adapter = mediaItemRecyclerViewAdapter
+        binding.recyclerMoongchiPicker.adapter = mediaListAdapter
 
         //미디어 아이템 선택시
         vm.selectedMediaList.observe(this, Observer { mediaList ->
             //ui 업데이트
-            mediaItemRecyclerViewAdapter.notifyDataSetChanged()
+            mediaListAdapter.notifyDataSetChanged()
             updateSelectedImageLayout(mediaList) { deselected ->
                 vm.removeMediaSelect(deselected)
             }
@@ -143,8 +126,6 @@ internal class MoongchiPickerDialog(
             dismiss()
         }
 
-
-        vm.loadMedia(mediaType, maxVisibleMediaCount)
     }
 
 
