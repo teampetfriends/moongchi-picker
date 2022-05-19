@@ -1,13 +1,9 @@
 package com.moongchipicker
 
 import android.net.Uri
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.MoongchiItemMediaBinding
 import com.moongchipicker.util.dpToPx
@@ -15,10 +11,10 @@ import com.moongchipicker.util.dpToPx
 internal interface MediaItemClickListener {
     fun onClickCamera()
     fun onClickGallery()
-    fun onMediaSelected(media : Media)
+    fun onMediaSelected(media: Media)
     fun onMediaDeSelected(media: Media)
-    fun isMediaSelected(media: Media) : Boolean
-    fun getSelectedMediaCount() : Int
+    fun isMediaSelected(media: Media): Boolean
+    fun getSelectedMediaCount(): Int
 
 
     /**
@@ -36,17 +32,10 @@ internal interface MediaItemClickListener {
 
 internal class MediaListAdapter(
     private val maxImageCount: Int,
-    private val onMediaItemClickListener: MediaItemClickListener,
-) : ListAdapter<Media, MediaListAdapter.ViewHolder>(Media.diffUtil) {
+    private val onMediaItemClickListener: MediaItemClickListener
+) : AppListAdapter<Media, MoongchiItemMediaBinding>(R.layout.moongchi_item_media, Media.diffUtil) {
 
-    class ViewHolder(val binding: MoongchiItemMediaBinding) : RecyclerView.ViewHolder(binding.root)
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(MoongchiItemMediaBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<MoongchiItemMediaBinding>, position: Int) {
         val context = holder.binding.root.context
         val mediaImageView = holder.binding.media
         when (position) {

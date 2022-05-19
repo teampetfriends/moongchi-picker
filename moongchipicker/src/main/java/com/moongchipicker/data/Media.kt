@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.moongchipicker.PetMediaType
 import com.moongchipicker.util.BitmapHelper
 
-internal data class Media(
+data class Media(
     val uri: Uri,
     val mediaType : PetMediaType
 ) {

@@ -5,12 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.moongchipicker.MoongchiPickerDialogViewModel" />
+
         <variable
             name="isImagePicker"
-            type="boolean"/>
+            type="boolean" />
+
         <variable
             name="allowMultipleSelection"
             type="boolean" />
@@ -18,93 +21,93 @@
     </data>
 
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/top_bar"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_margin="20dp"
+                android:text="@{isImagePicker ? @string/mc_pick_image : @string/mc_pick_video}"
+                android:textSize="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{isImagePicker ? @string/mc_pick_image : @string/mc_pick_video}"
-                    android:layout_margin="20dp"
-                    android:textSize="15dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/submit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="20dp"
-                    android:gravity="center"
-                    android:text="@string/mc_submit"
-                    app:isVisible="@{allowMultipleSelection}"
-                    android:textColor="@color/mc_deep_sky_blue"
-                    android:textSize="15dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <FrameLayout
-                android:id="@+id/selected_media_frame"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
+            <TextView
+                android:id="@+id/submit"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                android:text="@string/mc_submit"
+                android:textColor="@color/mc_deep_sky_blue"
+                android:textSize="15dp"
                 app:isVisible="@{allowMultipleSelection}"
-                android:background="@color/mc_bright_gray">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <HorizontalScrollView
-                    android:id="@+id/selected_media_scroll"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <LinearLayout
-                        android:id="@+id/selected_media"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                    </LinearLayout>
-
-                </HorizontalScrollView>
-
-                <TextView
-                    android:id="@+id/selected_media_placeholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/mc_no_media"
-                    android:textColor="@color/mc_deep_sky_blue"
-                    app:isVisible="@{vm.selectedMediaList.size() == 0}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/top_bar" />
-
-
-            </FrameLayout>
-
+        <FrameLayout
+            android:id="@+id/selected_media_frame"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/mc_bright_gray"
+            app:isVisible="@{allowMultipleSelection}">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_moongchi_picker"
+                android:id="@+id/selected_media_items"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:background="@color/mc_light_gray"
-                app:submitList="@{vm.mediaList}"/>
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:submitList="@{vm.selectedMediaList}"
+                tools:listitem="@layout/moongchi_item_selected_media">
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.recyclerview.widget.RecyclerView>
+
+
+            <TextView
+                android:id="@+id/selected_media_placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/mc_no_media"
+                android:textColor="@color/mc_deep_sky_blue"
+                app:isVisible="@{vm.selectedMediaList.size() == 0}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/top_bar" />
+
+
+        </FrameLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/media_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
+            app:submitList="@{vm.mediaList}"
+            tools:background="@color/mc_light_gray"
+            tools:listitem="@layout/moongchi_item_media" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

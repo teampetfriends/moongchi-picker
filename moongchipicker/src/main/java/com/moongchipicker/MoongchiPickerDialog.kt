@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.data.Media
@@ -52,8 +53,6 @@ internal class MoongchiPickerDialog(
         binding = DialogMoongchiPickerBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = vm
-        binding.recyclerMoongchiPicker.layoutManager =
-            GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
         binding.isImagePicker =
             (arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: PetMediaType.IMAGE) == PetMediaType.IMAGE
         binding.allowMultipleSelection = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT).toSafe() > 1
@@ -115,15 +114,16 @@ internal class MoongchiPickerDialog(
                 }
             })
 
-        binding.recyclerMoongchiPicker.adapter = mediaListAdapter
+        binding.mediaItems.adapter = mediaListAdapter
+        binding.selectedMediaItems.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding.selectedMediaItems.adapter = SelectedMediaListAdapter {
+            vm.removeMediaSelect(it)
+        }
 
         //미디어 아이템 선택시
         vm.selectedMediaList.observe(this, Observer { mediaList ->
             //ui 업데이트
             mediaListAdapter.notifyDataSetChanged()
-            updateSelectedImageLayout(mediaList) { deselected ->
-                vm.removeMediaSelect(deselected)
-            }
         })
 
         binding.submit.setOnClickListener {
@@ -131,20 +131,6 @@ internal class MoongchiPickerDialog(
             dismiss()
         }
 
-    }
-
-
-    private fun updateSelectedImageLayout(mediaList: List<Media>, onDeselect: (Media) -> Unit) {
-        binding.selectedMedia.removeAllViews()
-        for (media in mediaList) {
-            val itemBinding =
-                MoongchiItemSelectedMediaBinding.inflate(layoutInflater, binding.selectedMedia, false)
-            itemBinding.media.setImageBitmap(media.getBitmap(requireContext()))
-            binding.selectedMedia.addView(itemBinding.root)
-            itemBinding.remove.setOnClickListener {
-                onDeselect(media)
-            }
-        }
     }
 
 
