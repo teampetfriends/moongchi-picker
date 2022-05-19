@@ -81,6 +81,7 @@
                     android:gravity="center"
                     android:text="@string/mc_no_media"
                     android:textColor="@color/mc_deep_sky_blue"
+                    app:isVisible="@{vm.selectedMediaList.size() == 0}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/top_bar" />

@@ -41,5 +41,13 @@ internal class MoongchiPickerDialogViewModel(
         }
     }
 
+    fun addMediaSelect(media: Media) {
+        _selectedMediaList.value = _selectedMediaList.value?.apply { add(media) }
+    }
+
+    fun removeMediaSelect(media: Media) {
+        _selectedMediaList.value = _selectedMediaList.value?.apply { remove(media) }
+    }
+
 
 }

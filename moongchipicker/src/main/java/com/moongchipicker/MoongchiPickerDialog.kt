@@ -86,11 +86,9 @@ internal class MoongchiPickerDialog(
             PetMediaType.VIDEO -> binding.title.text = getString(R.string.mc_pick_video)
         }
 
-        val selectedMediaList = MutableLiveData<MutableList<Media>>(mutableListOf())
 
         val mediaItemRecyclerViewAdapter = MoongchiPickerRecyclerViewAdapter(
             maxSelectableMediaCount,
-            selectedMediaList,
             object : MediaItemClickListener {
                 override fun onClickCamera() {
                     moongchiPickerDialogListener?.onClickCamera()
@@ -100,6 +98,22 @@ internal class MoongchiPickerDialog(
                 override fun onClickGallery() {
                     moongchiPickerDialogListener?.onClickGallery()
                     dismiss()
+                }
+
+                override fun onMediaSelected(media: Media) {
+                    vm.addMediaSelect(media)
+                }
+
+                override fun onMediaDeSelected(media: Media) {
+                    vm.removeMediaSelect(media)
+                }
+
+                override fun isMediaSelected(media: Media): Boolean {
+                    return vm.selectedMediaList.value.toSafe().contains(media)
+                }
+
+                override fun getSelectedMediaCount(): Int {
+                    return vm.selectedMediaList.value.toSafe().size
                 }
 
                 override fun onSubmit(uri: Uri) {
@@ -115,27 +129,37 @@ internal class MoongchiPickerDialog(
 
         binding.recyclerMoongchiPicker.adapter = mediaItemRecyclerViewAdapter
 
-        selectedMediaList.observe(this, Observer {
-            if (it.size > 0) {
-                binding.selectedMediaPlaceholder.visibility = View.INVISIBLE
-            } else {
-                binding.selectedMediaPlaceholder.visibility = View.VISIBLE
-            }
-
+        //미디어 아이템 선택시
+        vm.selectedMediaList.observe(this, Observer { mediaList ->
+            //ui 업데이트
             mediaItemRecyclerViewAdapter.notifyDataSetChanged()
+            updateSelectedImageLayout(mediaList) { deselected ->
+                vm.removeMediaSelect(deselected)
+            }
         })
 
         binding.submit.setOnClickListener {
-            moongchiPickerDialogListener?.onSubmitMedia(selectedMediaList.value?.map { it.uri }.toSafe())
+            moongchiPickerDialogListener?.onSubmitMedia(vm.selectedMediaList.value?.map { it.uri }.toSafe())
             dismiss()
         }
 
 
         vm.loadMedia(mediaType, maxVisibleMediaCount)
-
-
     }
 
+
+    private fun updateSelectedImageLayout(mediaList: List<Media>, onDeselect: (Media) -> Unit) {
+        binding.selectedMedia.removeAllViews()
+        for (media in mediaList) {
+            val itemBinding =
+                MoongchiItemSelectedMediaBinding.inflate(layoutInflater, binding.selectedMedia, false)
+            itemBinding.media.setImageBitmap(media.getBitmap(requireContext()))
+            binding.selectedMedia.addView(itemBinding.root)
+            itemBinding.remove.setOnClickListener {
+                onDeselect(media)
+            }
+        }
+    }
 
 
     companion object {

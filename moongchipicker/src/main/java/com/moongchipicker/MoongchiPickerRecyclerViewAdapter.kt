@@ -16,10 +16,17 @@ import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.MoongchiItemMediaBinding
 import com.moongchipicker.util.dpToPx
 import com.moongchipicker.util.toSafe
+import java.util.*
 
 internal interface MediaItemClickListener {
     fun onClickCamera()
     fun onClickGallery()
+    fun onMediaSelected(media : Media)
+    fun onMediaDeSelected(media: Media)
+    fun isMediaSelected(media: Media) : Boolean
+    fun getSelectedMediaCount() : Int
+
+
     /**
      *  when [MoongchiPickerRecyclerViewAdapter.maxImageCount] is 1, then once user click media tile
      *  the uri submitted immediately
@@ -35,8 +42,7 @@ internal interface MediaItemClickListener {
 
 internal class MoongchiPickerRecyclerViewAdapter(
     private val maxImageCount: Int = 1,
-    private val selectedMediaList: MutableLiveData<MutableList<Media>>,
-    private val onMediaItemClickListener: MediaItemClickListener
+    private val onMediaItemClickListener: MediaItemClickListener,
 ) : ListAdapter<Media, MoongchiPickerRecyclerViewAdapter.ViewHolder>(Media.diffUtil) {
 
     class ViewHolder(val binding: MoongchiItemMediaBinding) : RecyclerView.ViewHolder(binding.root)
@@ -81,7 +87,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
                     onMediaItemClickListener.onFailed(it)
                 }
 
-                if (selectedMediaList.value?.contains(currentMedia).toSafe()) {
+                if (onMediaItemClickListener.isMediaSelected(currentMedia)) {
                     //선택표시
                     mediaImageView.setColorFilter(ContextCompat.getColor(context, R.color.mc_black_translucent))
                 } else {
@@ -95,15 +101,12 @@ internal class MoongchiPickerRecyclerViewAdapter(
                         return@setOnClickListener
                     }
                     //when user click selected tile, then tile should removed from selectedMediaList
-                    if (selectedMediaList.value?.contains(currentMedia).toSafe()) {
-                        selectedMediaList.value = selectedMediaList.value.toSafe().toMutableList()
-                            .apply { remove(currentMedia) }
-
+                    if (onMediaItemClickListener.isMediaSelected(currentMedia)) {
+                        onMediaItemClickListener.onMediaDeSelected(currentMedia)
                         notifyItemChanged(position)
                     } else {
-                        if (selectedMediaList.value?.size.toSafe() < maxImageCount) {
-                            selectedMediaList.value = selectedMediaList.value.toSafe().toMutableList()
-                                .apply { add(currentMedia) }
+                        if (onMediaItemClickListener.getSelectedMediaCount() < maxImageCount) {
+                            onMediaItemClickListener.onMediaSelected(currentMedia)
                             notifyItemChanged(position)
                         }
                         //when user select media over limit
