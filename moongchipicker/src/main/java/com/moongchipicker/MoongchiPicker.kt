@@ -29,7 +29,8 @@ interface MoongchiPickerListener {
 
 /**
  * this class must created before [AppCompatActivity.onStart] because it use [ComponentActivity.registerForActivityResult]
- * @param activity activity to register [ActivityResultContracts] that MoonchiPicker need
+ * @see ComponentActivity.registerForActivityResult
+ * @param activity activity to register [ActivityResultContracts] that MoongchiPicker use
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
  * @param maxSelectableMediaCountBuilder builder for build max selection count for fetching media from gallery
@@ -115,6 +116,7 @@ class MoongchiPicker(
 
 /**
  * this must called before [AppCompatActivity.onStart] because it use [ComponentActivity.registerForActivityResult]
+ * @see ComponentActivity.registerForActivityResult
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
  * @param maxMediaCountBuilder builder for build max selection count for fetching media from gallery
@@ -122,7 +124,7 @@ class MoongchiPicker(
  */
 fun AppCompatActivity.createMoongchiPicker(
     allowPermissionRequest: Boolean = false,
-    mediaType: PetMediaType,
+    mediaType: PetMediaType = PetMediaType.IMAGE,
     allowMultiple: Boolean = false,
     maxMediaCountBuilder: () -> Int = { 1 },
     maxVisibleMediaCount: Int = MoongchiPickerDialog.MAX_VISIBLE_MEDIA_COUNT,
@@ -141,6 +143,7 @@ fun AppCompatActivity.createMoongchiPicker(
 
 /**
  * this must called before [AppCompatActivity.onStart] because it use [ComponentActivity.registerForActivityResult]
+ * @see ComponentActivity.registerForActivityResult
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
  * @param maxMediaCountBuilder builder for build max selection count for fetching media from gallery
@@ -148,7 +151,7 @@ fun AppCompatActivity.createMoongchiPicker(
  */
 fun Fragment.createMoongchiPicker(
     allowPermissionRequest: Boolean = false,
-    mediaType: PetMediaType,
+    mediaType: PetMediaType = PetMediaType.IMAGE,
     allowMultiple: Boolean = false,
     maxMediaCountBuilder: () -> Int = { 1 },
     maxVisibleMediaCount: Int = MoongchiPickerDialog.MAX_VISIBLE_MEDIA_COUNT,

@@ -9,9 +9,7 @@ import androidx.annotation.MainThread
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.updatePadding
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -44,12 +42,22 @@ internal class MoongchiPickerDialog(
         moongchiPickerDialogListener = listener
     }
 
+    private val vm: MoongchiPickerDialogViewModel by lazy {
+        ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return MoongchiPickerDialogViewModel(MediaLoader(requireContext())) as T
+            }
+        }).get(MoongchiPickerDialogViewModel::class.java)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = DialogMoongchiPickerBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.vm = vm
         binding.recyclerMoongchiPicker.layoutManager =
             GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
         return binding.root
@@ -78,13 +86,11 @@ internal class MoongchiPickerDialog(
             PetMediaType.VIDEO -> binding.title.text = getString(R.string.mc_pick_video)
         }
 
-
         val selectedMediaList = MutableLiveData<MutableList<Media>>(mutableListOf())
 
         val mediaItemRecyclerViewAdapter = MoongchiPickerRecyclerViewAdapter(
             maxSelectableMediaCount,
             selectedMediaList,
-            viewLifecycleOwner,
             object : MediaItemClickListener {
                 override fun onClickCamera() {
                     moongchiPickerDialogListener?.onClickCamera()
@@ -109,8 +115,6 @@ internal class MoongchiPickerDialog(
 
         binding.recyclerMoongchiPicker.adapter = mediaItemRecyclerViewAdapter
 
-
-
         selectedMediaList.observe(this, Observer {
             if (it.size > 0) {
                 binding.selectedMediaPlaceholder.visibility = View.INVISIBLE
@@ -118,15 +122,7 @@ internal class MoongchiPickerDialog(
                 binding.selectedMediaPlaceholder.visibility = View.VISIBLE
             }
 
-            kotlin.runCatching {
-                updateSelectedImageLayout(it) { deselectedMedia ->
-                    selectedMediaList.value =
-                        selectedMediaList.value.toSafe().toMutableList().apply { remove(deselectedMedia) }
-                }
-            }.onFailure { t ->
-                moongchiPickerDialogListener?.onFailed(t)
-            }
-
+            mediaItemRecyclerViewAdapter.notifyDataSetChanged()
         })
 
         binding.submit.setOnClickListener {
@@ -135,70 +131,11 @@ internal class MoongchiPickerDialog(
         }
 
 
+        vm.loadMedia(mediaType, maxVisibleMediaCount)
 
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            kotlin.runCatching {
-                val uriList = loadMedia(mediaType, maxVisibleMediaCount)
-                for (uri in uriList) {
-                    withContext(Dispatchers.Main) {
-                        mediaItemRecyclerViewAdapter.addMedia(Media(uri, mediaType))
-                    }
-                }
-            }.onFailure {
-                withContext(Dispatchers.Main) {
-                    moongchiPickerDialogListener?.onFailed(it)
-                }
-            }
-        }
+
     }
 
-
-    @Throws
-    private fun updateSelectedImageLayout(mediaList: List<Media>, onDeselect: (Media) -> Unit) {
-        binding.selectedMedia.removeAllViews()
-        for (media in mediaList) {
-            val itemBinding =
-                MoongchiItemSelectedMediaBinding.inflate(layoutInflater, binding.selectedMedia, false)
-            itemBinding.media.setImageBitmap(media.getBitmap(requireContext()))
-            binding.selectedMedia.addView(itemBinding.root)
-            itemBinding.remove.setOnClickListener {
-                onDeselect(media)
-            }
-        }
-    }
-
-    @Throws
-    private suspend fun loadMedia(mediaType: PetMediaType, maxMediaCount: Int): List<Uri> {
-        val fromExternal = loadMediaFromExternalStorage(mediaType, maxMediaCount)
-        val imageRemain = maxMediaCount - fromExternal.size
-        return if (imageRemain > 0) {
-            fromExternal + loadMediaFromInternalStorage(mediaType, imageRemain)
-        } else {
-            fromExternal
-        }
-    }
-
-    @Throws
-    private suspend fun loadMediaFromExternalStorage(
-        mediaType: PetMediaType,
-        maxMediaSize: Int
-    ): List<Uri> {
-        return when (mediaType) {
-            PetMediaType.IMAGE -> requireContext().loadImagesFromPublicExternalStorage(maxMediaSize)
-            PetMediaType.VIDEO -> requireContext().loadVideosFromPublicExternalStorage(maxMediaSize)
-        }
-    }
-
-    @Throws
-    private suspend fun loadMediaFromInternalStorage(
-        mediaType: PetMediaType,
-        maxMediaSize: Int
-    ): List<Uri> {
-        return when (mediaType) {
-            PetMediaType.IMAGE -> requireContext().loadImagesFromInternalStorage(maxMediaSize)
-            PetMediaType.VIDEO -> requireContext().loadVideosFromInternalStorage(maxMediaSize)
-        }
-    }
 
 
     companion object {

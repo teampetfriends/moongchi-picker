@@ -4,7 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data></data>
+    <data>
+        <variable
+            name="vm"
+            type="com.moongchipicker.MoongchiPickerDialogViewModel" />
+    </data>
+
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -88,7 +93,8 @@
                 android:id="@+id/recycler_moongchi_picker"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:background="@color/mc_light_gray" />
+                tools:background="@color/mc_light_gray"
+                app:submitList="@{vm.mediaList}"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

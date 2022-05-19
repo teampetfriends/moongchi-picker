@@ -10,6 +10,7 @@ import androidx.core.view.setPadding
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.MoongchiItemMediaBinding
@@ -35,20 +36,11 @@ internal interface MediaItemClickListener {
 internal class MoongchiPickerRecyclerViewAdapter(
     private val maxImageCount: Int = 1,
     private val selectedMediaList: MutableLiveData<MutableList<Media>>,
-    lifecycleOwner: LifecycleOwner,
     private val onMediaItemClickListener: MediaItemClickListener
-) : RecyclerView.Adapter<MoongchiPickerRecyclerViewAdapter.ViewHolder>() {
-
-    //Photo.empty() is placeholder for camera, gallery tile
-    private var mediaList = mutableListOf(Media.empty(), Media.empty())
+) : ListAdapter<Media, MoongchiPickerRecyclerViewAdapter.ViewHolder>(Media.diffUtil) {
 
     class ViewHolder(val binding: MoongchiItemMediaBinding) : RecyclerView.ViewHolder(binding.root)
 
-    init {
-        selectedMediaList.observe(lifecycleOwner, Observer {
-            notifyDataSetChanged()
-        })
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(MoongchiItemMediaBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -81,7 +73,7 @@ internal class MoongchiPickerRecyclerViewAdapter(
             else -> {
                 mediaImageView.setPadding(0)
 
-                val currentMedia = mediaList.getOrNull(position) ?: return
+                val currentMedia = getItem(position)
 
                 kotlin.runCatching {
                     mediaImageView.setImageBitmap(currentMedia.getBitmap(context))
@@ -127,16 +119,6 @@ internal class MoongchiPickerRecyclerViewAdapter(
 
             }
         }
-    }
-
-    override fun getItemCount(): Int {
-        return mediaList.size
-    }
-
-
-    fun addMedia(media: Media) {
-        mediaList.add(media)
-        notifyItemInserted(mediaList.size - 1)
     }
 
     companion object {

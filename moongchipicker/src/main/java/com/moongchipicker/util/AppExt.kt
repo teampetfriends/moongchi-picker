@@ -5,6 +5,8 @@ import android.content.res.Resources
 import android.os.Build
 import android.util.TypedValue
 import android.util.DisplayMetrics
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import kotlin.math.roundToInt
 
 
@@ -35,7 +37,33 @@ internal fun String?.toSafe(): String {
     return this ?: ""
 }
 
-fun Context.dpToPx(dp: Float): Int {
+internal fun Context.dpToPx(dp: Float): Int {
     return (dp * (resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
+}
+
+internal fun <T> MutableLiveData<T>.toLiveData() : LiveData<T> {
+    return this
+}
+
+inline fun <reified R> Any?.whatIfNotNullAs(
+    whatIf: (R) -> Unit
+): Any? {
+    return whatIfNotNullAs(
+        whatIf = whatIf,
+        whatIfNot = { }
+    )
+}
+
+inline fun <reified R> Any?.whatIfNotNullAs(
+    whatIf: (R) -> Unit,
+    whatIfNot: () -> Unit
+): Any? {
+
+    if (this != null && this is R) {
+        whatIf(this as R)
+        return this
+    }
+    whatIfNot()
+    return this
 }
 

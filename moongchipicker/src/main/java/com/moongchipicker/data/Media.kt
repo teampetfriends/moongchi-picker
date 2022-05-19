@@ -3,6 +3,7 @@ package com.moongchipicker.data
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.recyclerview.widget.DiffUtil
 import com.moongchipicker.PetMediaType
 import com.moongchipicker.util.BitmapHelper
 import java.io.IOException
@@ -22,5 +23,15 @@ internal data class Media(
     }
     companion object {
         fun empty() = Media(Uri.EMPTY, PetMediaType.IMAGE)
+        val diffUtil = object : DiffUtil.ItemCallback<Media>(){
+            override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean {
+                return oldItem.uri == newItem.uri
+            }
+
+        }
     }
 }
