@@ -115,15 +115,12 @@ internal class MoongchiPickerDialog(
             })
 
         binding.mediaItems.adapter = mediaListAdapter
-        binding.selectedMediaItems.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        binding.selectedMediaItems.adapter = SelectedMediaListAdapter {
-            vm.removeMediaSelect(it)
-        }
 
         //미디어 아이템 선택시
         vm.selectedMediaList.observe(this, Observer { mediaList ->
             //ui 업데이트
             mediaListAdapter.notifyDataSetChanged()
+            updateSelectedMediaView(mediaList)
         })
 
         binding.submit.setOnClickListener {
@@ -133,6 +130,18 @@ internal class MoongchiPickerDialog(
 
     }
 
+
+    fun updateSelectedMediaView(selectedMediaList: List<Media>) {
+        binding.selectedMediaItems.removeAllViews()
+        selectedMediaList.forEach { item ->
+            MoongchiItemSelectedMediaBinding.inflate(layoutInflater, binding.selectedMediaItems, true).apply {
+                media.setImageBitmap(item.getBitmap(root.context))
+                remove.setOnClickListener {
+                    vm.removeMediaSelect(item)
+                }
+            }
+        }
+    }
 
     companion object {
         private const val EXTRA_MEDIA_TYPE = "EXTRA_MEDIA_TYPE"
