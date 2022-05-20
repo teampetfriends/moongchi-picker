@@ -80,8 +80,6 @@ android {
      compileSdkVersion 31
 }
 ```
-> If you're facing :app:checkDebugDuplicateClasses error during build, it's mean latest version not currently available.
-> You should wait about 2~3 hours since latest version released
 <br/><br/>
 
 ## Demo
@@ -96,8 +94,12 @@ android {
 ![alt](demo04.gif)
 >MoongchiPicker supports english and korean
 ## How to use
-> MoongchiPicker must be created on **onCreate** of activity lifecycle. Because it uses context to load file from storage, and use registerForActivityResult which is must be called before onStart.
-> And MoongchiPicker can be created in Activity and Fragment.
+> And MoongchiPicker can be created in Activity and Fragment.  
+> MoongchiPicker must created before Acitivty or Fragment lifecycle state is **STARTED** State. because it use ComponentActivity.registerForActivityResult. If you break this, you will see IllegalStateException.
+
+```
+java.lang.IllegalStateException: LifecycleOwner com.petfriends.myapplication.MainActivity@af43c4 is attempting to register while current state is STARTED. LifecycleOwners must call register before they are STARTED.
+```
 
 Due to MoongchiPicker use registerForActivityResult, you have to pass ComponentActivity as argument.
 And pass fragmentManager as argument for showing MoongchiPickerDialog.
