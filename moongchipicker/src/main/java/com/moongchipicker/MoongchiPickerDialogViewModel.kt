@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.moongchipicker.data.Media
 import com.moongchipicker.util.MediaLoader
 import com.moongchipicker.util.toLiveData
+import com.moongchipicker.util.toSafe
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,7 +18,7 @@ internal class MoongchiPickerDialogViewModel(
     private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _selectedMediaList = MutableLiveData<MutableList<Media>>(mutableListOf())
+    private val _selectedMediaList = MutableLiveData<List<Media>>(mutableListOf())
     val selectedMediaList = _selectedMediaList.toLiveData()
 
     private val _mediaList = MutableLiveData<List<Media>>(emptyList())
@@ -44,11 +45,11 @@ internal class MoongchiPickerDialogViewModel(
     }
 
     fun addMediaSelect(media: Media) {
-        _selectedMediaList.value = _selectedMediaList.value?.apply { add(media) }
+        _selectedMediaList.value = _selectedMediaList.value.toSafe() + listOf(media)
     }
 
     fun removeMediaSelect(media: Media) {
-        _selectedMediaList.value = _selectedMediaList.value?.apply { remove(media) }
+        _selectedMediaList.value = _selectedMediaList.value.toSafe() - listOf(media).toSet()
     }
 
 
