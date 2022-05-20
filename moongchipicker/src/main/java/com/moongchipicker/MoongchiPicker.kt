@@ -27,7 +27,7 @@ interface MoongchiPickerListener {
 
 
 /**
- * this class must created before [AppCompatActivity.onStart] because it use [ComponentActivity.registerForActivityResult]
+ * this class must created before lifecycleOwner's state is STARTED. Because it use [ComponentActivity.registerForActivityResult]
  * @see ComponentActivity.registerForActivityResult
  * @param activity activity to register [ActivityResultContracts] that MoongchiPicker use
  * @param allowPermissionRequest allow to request permissions for reading and writing media
@@ -114,7 +114,7 @@ class MoongchiPicker(
 }
 
 /**
- * this must called before [AppCompatActivity.onStart] because it use [ComponentActivity.registerForActivityResult]
+ * This must called before lifecylceOwner's state is STARTED. Because it use [ComponentActivity.registerForActivityResult]
  * @see ComponentActivity.registerForActivityResult
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
@@ -141,7 +141,7 @@ fun AppCompatActivity.createMoongchiPicker(
 
 
 /**
- * this must called before [AppCompatActivity.onStart] because it use [ComponentActivity.registerForActivityResult]
+ * This must called before lifecylceOwner's state is STARTED. Because it use [ComponentActivity.registerForActivityResult]
  * @see ComponentActivity.registerForActivityResult
  * @param allowPermissionRequest allow to request permissions for reading and writing media
  * @param allowMultiple allow to pick multiple media from gallery
