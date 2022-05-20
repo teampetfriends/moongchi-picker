@@ -94,7 +94,7 @@ android {
 ![alt](demo04.gif)
 >MoongchiPicker supports english and korean
 ## How to use
-> And MoongchiPicker can be created in Activity and Fragment.  
+> MoongchiPicker can be created in Activity and Fragment.  
 > MoongchiPicker must created before Acitivty or Fragment lifecycle state is **STARTED** State. because it use ComponentActivity.registerForActivityResult. If you break this, you will see IllegalStateException.
 
 ```
