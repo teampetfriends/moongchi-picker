@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.github.teampetfriends.moongchi-picker:final:x.y.z'
 }
 ```
+<img alt="Version" src="https://jitpack.io/v/teampetfriends/moongchi-picker.svg"/>
 
 #### Step 3. Enable databinding
 
