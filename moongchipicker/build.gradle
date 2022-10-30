@@ -64,6 +64,17 @@ android {
     }
 }
 
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+    from android.sourceSets.main.kotlin.srcDirs
+}
+
+artifacts {
+    archives androidSourcesJar
+}
+
 dependencies {
     // coroutine
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
