@@ -1,13 +1,15 @@
 package com.petfriends.myapplication
 
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.moongchipicker.MoongchiPickerListener
+import com.moongchipicker.MoongchiPickerDialog
 import com.moongchipicker.PetMediaType
-import com.moongchipicker.createMoongchiPicker
+import com.moongchipicker.onMoongchiPickerResult
+import com.moongchipicker.showMoongchiPicker
+import com.moongchipicker.util.PERMISSION_MEDIA_ACCESS
+import com.moongchipicker.util.registerPermissionRequestLauncher
 import com.petfriends.myapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -16,36 +18,30 @@ class MainActivity : AppCompatActivity() {
         DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
     }
 
-    val moongchiPicker = createMoongchiPicker(
-        mediaType = PetMediaType.IMAGE,
-        allowPermissionRequest = true,
-        allowMultiple = true,
-        maxMediaCountBuilder = { 3 },
-        maxVisibleMediaCount = 20,
-        moongchiPickerListener = object : MoongchiPickerListener {
-            override fun onSubmitMedia(contentUris: List<Uri>) {
-                if (contentUris.isEmpty()) {
-                    return
-                }
-                binding.iv.setImageBitmap(BitmapHelper.getBitmapFromUri(contentUris.first(), contentResolver))
-            }
-
-            override fun onFailed(t: Throwable) {
-                Log.w("petfriends", t.stackTraceToString())
-            }
-
-            override fun onSelectedMediaCountOverLimit(limit: Int) {
-                super.onSelectedMediaCountOverLimit(limit)
-
-            }
-        })
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val permissionLauncher = registerPermissionRequestLauncher(
+            onPermissionGranted = { showMoongchiPicker(MoongchiPickerDialog.DialogInfo(PetMediaType.IMAGE, 3)) },
+            withDeniedPermissions = {}
+        )
+
         binding.iv.setOnClickListener {
-            moongchiPicker.show()
+            permissionLauncher.launch(PERMISSION_MEDIA_ACCESS)
+        }
+
+        onMoongchiPickerResult {
+            when (it) {
+                is MoongchiPickerDialog.DialogResult.Success -> {
+                    val bitmap = BitmapHelper.getBitmapFromUri(it.mediaUriList.first(), contentResolver)
+                    binding.iv.setImageBitmap(bitmap)
+                }
+                is MoongchiPickerDialog.DialogResult.Failure -> {
+                    Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
+                }
+            }
+
         }
     }
-
 }
+

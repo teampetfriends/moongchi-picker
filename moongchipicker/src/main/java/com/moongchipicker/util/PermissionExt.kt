@@ -1,8 +1,11 @@
 package com.moongchipicker.util
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 
@@ -16,11 +19,21 @@ internal fun Context.checkPermissionGranted(permissions: List<String>): Map<Stri
 }
 
 
-internal fun ComponentActivity.registerPermissionRequestLauncher(
-    permissionsToRequest: Array<String>,
+val PERMISSION_MEDIA_ACCESS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+} else {
+    arrayOf(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+}
+
+
+fun ComponentActivity.registerPermissionRequestLauncher(
     onPermissionGranted: () -> Unit,
     withDeniedPermissions: (Array<String>) -> Unit = { Logger.d("permission denied : ${it.toDebugString()}") }
-): PermissionResultLauncher {
+): ActivityResultLauncher<Array<String>> {
     return registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionResult ->
         permissionResult.filter { it.value == false }.map { it.key }.toTypedArray()
             .also { deniedPermissions: Array<String> ->
@@ -30,6 +43,6 @@ internal fun ComponentActivity.registerPermissionRequestLauncher(
                     withDeniedPermissions(deniedPermissions)
                 }
             }
-    }.toPermissionResultLauncher(permissionsToRequest, onPermissionGranted)
+    }
 }
 

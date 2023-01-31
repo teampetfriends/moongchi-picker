@@ -7,8 +7,12 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application>
+        <activity
+            android:name=".MoongchiPickerActivity"
+            android:exported="false" />
+
         <provider
-            android:name="com.moongchipicker.util.MoongchiFileProvider"
+            android:name=".util.MoongchiFileProvider"
             android:authorities="${applicationId}.com.moongchipicker.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -16,8 +20,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/moongchi_filepaths" />
         </provider>
-
     </application>
-
 
 </manifest>

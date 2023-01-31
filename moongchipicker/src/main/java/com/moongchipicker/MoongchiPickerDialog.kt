@@ -2,9 +2,11 @@ package com.moongchipicker
 
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,26 +18,35 @@ import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
 import com.moongchipicker.databinding.MoongchiItemSelectedMediaBinding
 import com.moongchipicker.util.MediaLoader
+import com.moongchipicker.util.setResult
 import com.moongchipicker.util.toSafe
 import java.io.Serializable
+import java.lang.Exception
 
-internal interface MoongchiPickerDialogListener : Serializable {
-    fun onSubmitMedia(uris: List<Uri>)
-    fun onClickCamera()
-    fun onClickGallery()
-    fun onFailed(t: Throwable)
+
+enum class PetMediaType : Serializable {
+    IMAGE, VIDEO
 }
 
-internal class MoongchiPickerDialog(
-) : BottomSheetDialogFragment() {
+class MoongchiPickerDialog : BottomSheetDialogFragment() {
+
+    data class DialogInfo(
+        val mediaType: PetMediaType,
+        val maxSelectableMediaCount: Int,
+        val maxVisibleMediaCount: Int = 25
+    ) : Serializable
+
+    sealed interface DialogResult : Serializable {
+        class Success(val mediaUriList: List<Uri>) : DialogResult
+        class Failure(val throwable: Throwable) : DialogResult
+    }
 
     private lateinit var binding: DialogMoongchiPickerBinding
 
-    private var moongchiPickerDialogListener: MoongchiPickerDialogListener? = null
-
-    fun setMoongchiPickerDialogListener(listener: MoongchiPickerDialogListener) {
-        moongchiPickerDialogListener = listener
+    private val dialogInfo by lazy {
+        arguments?.getSerializable(DIALOG_INFO_KEY) as DialogInfo
     }
+
 
     private val vm: MoongchiPickerDialogViewModel by lazy {
         ViewModelProvider(this, object : ViewModelProvider.Factory {
@@ -54,8 +65,8 @@ internal class MoongchiPickerDialog(
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = vm
         binding.isImagePicker =
-            (arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: PetMediaType.IMAGE) == PetMediaType.IMAGE
-        binding.allowMultipleSelection = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT).toSafe() > 1
+            dialogInfo.mediaType == PetMediaType.IMAGE
+        binding.allowMultipleSelection = dialogInfo.maxSelectableMediaCount.toSafe() > 1
         return binding.root
     }
 
@@ -63,27 +74,16 @@ internal class MoongchiPickerDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (moongchiPickerDialogListener == null) {
-            dismiss()
-            return
-        }
-
-        val maxVisibleMediaCount = arguments?.getInt(EXTRA_MAX_VISIBLE_MEDIA_COUNT) ?: MAX_VISIBLE_MEDIA_COUNT
-        val mediaType = arguments?.getSerializable(EXTRA_MEDIA_TYPE) as? PetMediaType ?: PetMediaType.IMAGE
-        val maxSelectableMediaCount = arguments?.getInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT).toSafe()
-
-        vm.loadMedia(mediaType, maxVisibleMediaCount)
+        vm.loadMedia(dialogInfo.mediaType, dialogInfo.maxVisibleMediaCount)
 
         val mediaListAdapter = MediaListAdapter(
-            maxSelectableMediaCount,
+            dialogInfo.maxSelectableMediaCount,
             object : MediaItemClickListener {
                 override fun onClickCamera() {
-                    moongchiPickerDialogListener?.onClickCamera()
                     dismiss()
                 }
 
                 override fun onClickGallery() {
-                    moongchiPickerDialogListener?.onClickGallery()
                     dismiss()
                 }
 
@@ -104,12 +104,12 @@ internal class MoongchiPickerDialog(
                 }
 
                 override fun onSubmit(uri: Uri) {
-                    moongchiPickerDialogListener?.onSubmitMedia(listOf(uri))
+                    setResult(REQUEST_MOONGCHI_PICKER, bundleOf(DIALOG_RESULT to DialogResult.Success(listOf(uri))))
                     dismiss()
                 }
 
                 override fun onFailed(t: Throwable) {
-                    moongchiPickerDialogListener?.onFailed(t)
+                    setResult(REQUEST_MOONGCHI_PICKER, bundleOf(DIALOG_RESULT to DialogResult.Failure(t)))
                     dismiss()
                 }
             })
@@ -124,7 +124,8 @@ internal class MoongchiPickerDialog(
         })
 
         binding.submit.setOnClickListener {
-            moongchiPickerDialogListener?.onSubmitMedia(vm.selectedMediaList.value?.map { it.uri }.toSafe())
+            val selectedMediaUriList: List<Uri> = vm.selectedMediaList.value?.map { it.uri }.toSafe()
+            setResult(REQUEST_MOONGCHI_PICKER, bundleOf(DIALOG_RESULT to DialogResult.Success(selectedMediaUriList)))
             dismiss()
         }
 
@@ -144,28 +145,9 @@ internal class MoongchiPickerDialog(
     }
 
     companion object {
-        private const val EXTRA_MEDIA_TYPE = "EXTRA_MEDIA_TYPE"
-        private const val EXTRA_MAX_SELECTABLE_MEDIA_COUNT = "EXTRA_MAX_IMAGE_COUNT"
-        private const val EXTRA_MAX_VISIBLE_MEDIA_COUNT = "EXTRA_MAX_MEDIA_SIZE"
-        const val MAX_VISIBLE_MEDIA_COUNT = 25
+        const val DIALOG_INFO_KEY = "DIALOG_INFO_KEY"
+        const val DIALOG_RESULT = "DIALOG_RESULT"
 
-        /**
-         * @param maxVisibleMediaCount MoongchiPickerDialog shows this amount of media items
-         */
-        fun newInstance(
-            mediaType: PetMediaType,
-            moongchiPickerDialogListener: MoongchiPickerDialogListener,
-            maxSelectableMediaCount: Int = 1,
-            maxVisibleMediaCount: Int = MAX_VISIBLE_MEDIA_COUNT
-        ): MoongchiPickerDialog {
-            val args = Bundle()
-            args.putSerializable(EXTRA_MEDIA_TYPE, mediaType)
-            args.putInt(EXTRA_MAX_SELECTABLE_MEDIA_COUNT, maxSelectableMediaCount)
-            args.putInt(EXTRA_MAX_VISIBLE_MEDIA_COUNT, maxVisibleMediaCount)
-            val fragment = MoongchiPickerDialog()
-            fragment.setMoongchiPickerDialogListener(moongchiPickerDialogListener)
-            fragment.arguments = args
-            return fragment
-        }
+        fun parseDialogResult(result: Bundle) = result.getSerializable(DIALOG_RESULT) as? DialogResult
     }
 }

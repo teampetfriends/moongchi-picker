@@ -2,7 +2,9 @@ package com.moongchipicker.util
 
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import android.util.DisplayMetrics
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlin.math.roundToInt
@@ -39,7 +41,7 @@ internal fun Context.dpToPx(dp: Float): Int {
     return (dp * (resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
 
-internal fun <T> MutableLiveData<T>.toLiveData() : LiveData<T> {
+internal fun <T> MutableLiveData<T>.toLiveData(): LiveData<T> {
     return this
 }
 
@@ -63,5 +65,12 @@ inline fun <reified R> Any?.whatIfNotNullAs(
     }
     whatIfNot()
     return this
+}
+
+internal fun Fragment.setResult(requestKey : String, result : Bundle) {
+    parentFragmentManager.setFragmentResult(
+        requestKey,
+        result
+    )
 }
 
