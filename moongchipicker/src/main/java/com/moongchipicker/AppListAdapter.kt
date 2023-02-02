@@ -1,6 +1,5 @@
 package com.moongchipicker
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil

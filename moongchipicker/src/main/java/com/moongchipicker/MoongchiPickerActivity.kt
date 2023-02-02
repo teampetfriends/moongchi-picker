@@ -1,16 +1,22 @@
 package com.moongchipicker
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.moongchipicker.util.PERMISSION_MEDIA_ACCESS
 import com.moongchipicker.util.registerPermissionRequestLauncher
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 
-sealed interface MoongchiPickerResult : Serializable {
-    class Success(uriList: List<Uri>) : MoongchiPickerResult
-    class Failure(throwable: Throwable) : MoongchiPickerResult
+sealed interface MoongchiPickerResult : Parcelable {
+    @Parcelize
+    class Success(val uriList: List<Uri>) : MoongchiPickerResult
+
+    @Parcelize
+    class Failure(val errorMsg: String?) : MoongchiPickerResult
 }
 
 class MoongchiPickerActivity : AppCompatActivity() {
@@ -19,7 +25,7 @@ class MoongchiPickerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_moongchi_picker)
 
         val dialogInfo =
-            intent.getSerializableExtra(MoongchiPickerDialog.DIALOG_INFO_KEY) as? MoongchiPickerDialog.DialogInfo
+            intent.getParcelableExtra<MoongchiPickerDialog.DialogInfo>(MoongchiPickerDialog.DIALOG_INFO_KEY)
                 ?: return
 
         val permissionLauncher = registerPermissionRequestLauncher(
@@ -32,6 +38,8 @@ class MoongchiPickerActivity : AppCompatActivity() {
                 ).show()
             }
         )
+
+        permissionLauncher.launch(PERMISSION_MEDIA_ACCESS)
 
         val getContentLauncher = registerGetContentLauncher(
             onSuccess = {
@@ -65,18 +73,18 @@ class MoongchiPickerActivity : AppCompatActivity() {
                 is MoongchiPickerDialog.DialogResult.Success -> {
                     setSuccessResult(it.mediaUriList)
                 }
-                is MoongchiPickerDialog.DialogResult.GetContentFromGallery -> {
+                is MoongchiPickerDialog.DialogResult.OpenGallery -> {
                     if (dialogInfo.maxSelectableMediaCount > 1) {
                         getMultipleContentLauncher.launch(dialogInfo.mediaType.mimeType)
                     } else {
                         getContentLauncher.launch(dialogInfo.mediaType.mimeType)
                     }
                 }
-                is MoongchiPickerDialog.DialogResult.TakePicture -> {
-                    takePictureLauncher.launch(Unit)
-                }
-                is MoongchiPickerDialog.DialogResult.TakeVideo -> {
-                    takeVideoLauncher.launch(Unit)
+                is MoongchiPickerDialog.DialogResult.OpenCamera -> {
+                    when (dialogInfo.mediaType) {
+                        MediaType.IMAGE -> takePictureLauncher.launch(Unit)
+                        MediaType.VIDEO -> takeVideoLauncher.launch(Unit)
+                    }
                 }
                 is MoongchiPickerDialog.DialogResult.Failure -> {
                     Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
@@ -95,6 +103,7 @@ class MoongchiPickerActivity : AppCompatActivity() {
                     MoongchiPickerResult.Success(uriList)
                 )
             })
+        finish()
     }
 
     private fun setFailureResult(throwable: Throwable) {
@@ -103,12 +112,18 @@ class MoongchiPickerActivity : AppCompatActivity() {
             Intent().apply {
                 putExtra(
                     KEY_MOONGCHIPICKER_RESULT,
-                    MoongchiPickerResult.Failure(throwable)
+                    MoongchiPickerResult.Failure(throwable.message)
                 )
             })
+        finish()
     }
 
     companion object {
         const val KEY_MOONGCHIPICKER_RESULT = "KEY_MOONGCHIPICKER_RESULT"
+
+        fun createIntent(context: Context, dialogInfo: MoongchiPickerDialog.DialogInfo) = Intent(
+            context,
+            MoongchiPickerActivity::class.java
+        ).apply { putExtra(MoongchiPickerDialog.DIALOG_INFO_KEY, dialogInfo) }
     }
 }
