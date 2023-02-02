@@ -4,22 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.moongchipicker.util.PERMISSION_MEDIA_ACCESS
-import com.moongchipicker.util.registerPermissionRequestLauncher
-import kotlinx.parcelize.Parcelize
+import com.moongchipicker.data.MediaType
+import com.moongchipicker.util.*
 
-sealed interface MoongchiPickerResult : Parcelable {
-    @Parcelize
-    class Success(val uriList: List<Uri>) : MoongchiPickerResult
-
-    @Parcelize
-    class Failure(val errorMsg: String?) : MoongchiPickerResult
-}
-
-class MoongchiPickerActivity : AppCompatActivity() {
+internal class MoongchiPickerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_moongchi_picker)
@@ -121,9 +111,10 @@ class MoongchiPickerActivity : AppCompatActivity() {
     companion object {
         const val KEY_MOONGCHIPICKER_RESULT = "KEY_MOONGCHIPICKER_RESULT"
 
-        fun createIntent(context: Context, dialogInfo: MoongchiPickerDialog.DialogInfo) = Intent(
-            context,
-            MoongchiPickerActivity::class.java
-        ).apply { putExtra(MoongchiPickerDialog.DIALOG_INFO_KEY, dialogInfo) }
+        internal fun createIntent(context: Context, dialogInfo: MoongchiPickerDialog.DialogInfo) =
+            Intent(
+                context,
+                MoongchiPickerActivity::class.java
+            ).apply { putExtra(MoongchiPickerDialog.DIALOG_INFO_KEY, dialogInfo) }
     }
 }

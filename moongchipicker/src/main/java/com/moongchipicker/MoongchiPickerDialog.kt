@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.data.Media
+import com.moongchipicker.data.MediaType
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
 import com.moongchipicker.databinding.MoongchiItemSelectedMediaBinding
 import com.moongchipicker.util.MediaLoader
@@ -158,6 +159,7 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
     }
 
     companion object {
+        const val REQUEST_MOONGCHI_PICKER_DIALOG = "REQUEST_MOONGCHI_PICKER_DIALOG"
         const val DIALOG_INFO_KEY = "DIALOG_INFO_KEY"
         const val DIALOG_RESULT = "DIALOG_RESULT"
 

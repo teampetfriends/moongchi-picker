@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.moongchipicker.data.Media
+import com.moongchipicker.data.MediaType
 import com.moongchipicker.util.MediaLoader
 import com.moongchipicker.util.toLiveData
 import com.moongchipicker.util.toSafe

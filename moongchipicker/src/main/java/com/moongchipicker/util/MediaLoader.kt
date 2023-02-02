@@ -2,7 +2,7 @@ package com.moongchipicker.util
 
 import android.content.Context
 import android.net.Uri
-import com.moongchipicker.MediaType
+import com.moongchipicker.data.MediaType
 
 internal class MediaLoader(
     private val context : Context

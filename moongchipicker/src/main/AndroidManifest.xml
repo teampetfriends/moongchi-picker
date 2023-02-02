@@ -9,7 +9,8 @@
     <application>
         <activity
             android:name=".MoongchiPickerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/MoongchiPicker.Transparent" />
 
         <provider
             android:name=".util.MoongchiFileProvider"

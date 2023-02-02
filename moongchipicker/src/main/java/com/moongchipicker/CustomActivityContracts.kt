@@ -4,12 +4,37 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Parcelable
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.net.toFile
 import com.moongchipicker.util.createImageFilePrivate
 import com.moongchipicker.util.createVideoFilePrivate
 import com.moongchipicker.util.getContentUriFromFile
+import kotlinx.parcelize.Parcelize
+
+
+sealed interface MoongchiPickerResult : Parcelable {
+    @Parcelize
+    class Success(val uriList: List<Uri>) : MoongchiPickerResult
+
+    @Parcelize
+    class Failure(val errorMsg: String?) : MoongchiPickerResult
+}
+
+
+class OpenMoongchiPicker :
+    ActivityResultContract<MoongchiPickerDialog.DialogInfo, MoongchiPickerResult>() {
+    override fun createIntent(context: Context, input: MoongchiPickerDialog.DialogInfo): Intent {
+        return MoongchiPickerActivity.createIntent(context, input)
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): MoongchiPickerResult {
+        return intent?.getParcelableExtra(MoongchiPickerActivity.KEY_MOONGCHIPICKER_RESULT)
+                as? MoongchiPickerResult
+            ?: MoongchiPickerResult.Failure("Can't get result from moongchiPicker")
+    }
+}
 
 internal class CustomTakePicture : ActivityResultContract<Unit, Uri?>() {
     private var uri: Uri? = null

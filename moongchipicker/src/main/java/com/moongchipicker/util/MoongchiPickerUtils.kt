@@ -1,4 +1,4 @@
-package com.moongchipicker
+package com.moongchipicker.util
 
 import android.net.Uri
 import androidx.activity.ComponentActivity
@@ -6,15 +6,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import com.moongchipicker.util.GetPictureFailedException
-import java.io.Serializable
-
-enum class MediaType(val mimeType : String) : Serializable {
-    IMAGE("image/*"), VIDEO("video/*")
-}
-
-internal const val REQUEST_MOONGCHI_PICKER = 456
-internal const val REQUEST_MOONGCHI_PICKER_DIALOG = "REQUEST_MOONGCHI_PICKER_DIALOG"
+import com.moongchipicker.CustomTakePicture
+import com.moongchipicker.CustomTakeVideo
+import com.moongchipicker.MoongchiPickerDialog
+import com.moongchipicker.MoongchiPickerDialog.Companion.REQUEST_MOONGCHI_PICKER_DIALOG
+import com.moongchipicker.data.MediaType
 
 internal fun AppCompatActivity.showMoongchiPicker(dialogInfo: MoongchiPickerDialog.DialogInfo) {
     MoongchiPickerDialog().apply {

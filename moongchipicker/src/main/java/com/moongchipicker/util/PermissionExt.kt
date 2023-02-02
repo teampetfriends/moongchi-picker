@@ -21,10 +21,12 @@ internal fun Context.checkPermissionGranted(permissions: List<String>): Map<Stri
 
 val PERMISSION_MEDIA_ACCESS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
     arrayOf(
+        Manifest.permission.CAMERA,
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
 } else {
     arrayOf(
+        Manifest.permission.CAMERA,
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 }
