@@ -5,13 +5,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.recyclerview.widget.DiffUtil
 import com.moongchipicker.util.BitmapHelper
-import java.io.Serializable
 
-enum class MediaType(val mimeType: String) : Serializable {
-    IMAGE("image/*"), VIDEO("video/*")
-}
-
-data class Media(
+internal data class Media(
     val uri: Uri,
     val mediaType: MediaType
 ) {
@@ -31,11 +26,11 @@ data class Media(
         fun empty() = Media(Uri.EMPTY, MediaType.IMAGE)
         val diffUtil = object : DiffUtil.ItemCallback<Media>() {
             override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
-                return oldItem == newItem
+                return oldItem.uri == newItem.uri
             }
 
             override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean {
-                return oldItem.uri == newItem.uri
+                return oldItem == newItem
             }
 
         }

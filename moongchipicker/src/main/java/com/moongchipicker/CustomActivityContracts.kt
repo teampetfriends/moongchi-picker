@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Parcelable
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.net.toFile
@@ -13,7 +12,6 @@ import com.moongchipicker.data.MoongchiPickerResult
 import com.moongchipicker.util.createImageFilePrivate
 import com.moongchipicker.util.createVideoFilePrivate
 import com.moongchipicker.util.getContentUriFromFile
-import kotlinx.parcelize.Parcelize
 
 
 class OpenMoongchiPicker :

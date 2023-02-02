@@ -1,5 +1,6 @@
 package com.moongchipicker.util
 
+import android.app.ProgressDialog.show
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -11,17 +12,21 @@ import com.moongchipicker.CustomTakeVideo
 import com.moongchipicker.MoongchiPickerDialog
 import com.moongchipicker.MoongchiPickerDialog.Companion.REQUEST_MOONGCHI_PICKER_DIALOG
 import com.moongchipicker.data.MediaType
-import com.moongchipicker.data.MoongchiPickerParam
+import com.moongchipicker.data.MoongchiPickerDialogParam
 
-internal fun AppCompatActivity.showMoongchiPicker(moongchiPickerParam: MoongchiPickerParam) {
+internal fun AppCompatActivity.showMoongchiPicker(moongchiPickerParam: MoongchiPickerDialogParam) {
+    val fragmentTag = "moongchiPicker"
+    val moongchiPickerDialog: MoongchiPickerDialog? =
+        supportFragmentManager.findFragmentByTag(fragmentTag) as? MoongchiPickerDialog
+    moongchiPickerDialog?.dismiss()
     MoongchiPickerDialog().apply {
         arguments = bundleOf(
-            MoongchiPickerDialog.DIALOG_INFO_KEY to MoongchiPickerParam(
+            MoongchiPickerDialog.DIALOG_INFO_KEY to MoongchiPickerDialogParam(
                 MediaType.IMAGE,
                 5
             )
         )
-    }.show(supportFragmentManager, null)
+    }.show(supportFragmentManager, fragmentTag)
 }
 
 internal fun AppCompatActivity.onMoongchiPickerResult(callback: (MoongchiPickerDialog.DialogResult) -> Unit) {

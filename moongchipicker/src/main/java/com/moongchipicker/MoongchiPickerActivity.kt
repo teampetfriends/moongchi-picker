@@ -6,21 +6,24 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.moongchipicker.data.MediaType
-import com.moongchipicker.data.MoongchiPickerParam
-import com.moongchipicker.data.MoongchiPickerResult
+import androidx.fragment.app.DialogFragment
+import com.moongchipicker.data.*
 import com.moongchipicker.util.*
 
 internal class MoongchiPickerActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val dialogInfo =
+        val dialogParam: MoongchiPickerDialogParam =
             intent.getParcelableExtra<MoongchiPickerParam>(MoongchiPickerDialog.DIALOG_INFO_KEY)
+                ?.toDialogParam()
                 ?: return
 
         val permissionLauncher = registerPermissionRequestLauncher(
-            onPermissionGranted = { showMoongchiPicker(dialogInfo) },
+            onPermissionGranted = {
+                showMoongchiPicker(dialogParam)
+            },
             withDeniedPermissions = {
                 Toast.makeText(
                     this,
@@ -34,26 +37,28 @@ internal class MoongchiPickerActivity : AppCompatActivity() {
 
         val getContentLauncher = registerGetContentLauncher(
             onSuccess = {
-                setSuccessResult(listOf(it))
+                showMoongchiPicker(dialogParam.copy(selectedUriList = listOf(it)))
             },
             onFailed = ::setFailureResult
         )
 
         val getMultipleContentLauncher = registerGetMultipleContentLauncher(
-            onSuccess = ::setSuccessResult,
+            onSuccess = {
+                showMoongchiPicker(dialogParam.copy(selectedUriList = it))
+            },
             onFailed = ::setFailureResult
         )
 
         val takePictureLauncher = registerTakePictureLauncher(
             onSuccess = {
-                setSuccessResult(listOf(it))
+                showMoongchiPicker(dialogParam.copy(selectedUriList = listOf(it)))
             },
             onFailed = ::setFailureResult
         )
 
         val takeVideoLauncher = registerTakeVideoLauncher(
             onSuccess = {
-                setSuccessResult(listOf(it))
+                showMoongchiPicker(dialogParam.copy(selectedUriList = listOf(it)))
             },
             onFailed = ::setFailureResult
         )
@@ -65,14 +70,14 @@ internal class MoongchiPickerActivity : AppCompatActivity() {
                     setSuccessResult(it.mediaUriList)
                 }
                 is MoongchiPickerDialog.DialogResult.OpenGallery -> {
-                    if (dialogInfo.maxSelectableMediaCount > 1) {
-                        getMultipleContentLauncher.launch(dialogInfo.mediaType.mimeType)
+                    if (dialogParam.maxSelectableMediaCount > 1) {
+                        getMultipleContentLauncher.launch(dialogParam.mediaType.mimeType)
                     } else {
-                        getContentLauncher.launch(dialogInfo.mediaType.mimeType)
+                        getContentLauncher.launch(dialogParam.mediaType.mimeType)
                     }
                 }
                 is MoongchiPickerDialog.DialogResult.OpenCamera -> {
-                    when (dialogInfo.mediaType) {
+                    when (dialogParam.mediaType) {
                         MediaType.IMAGE -> takePictureLauncher.launch(Unit)
                         MediaType.VIDEO -> takeVideoLauncher.launch(Unit)
                     }
@@ -112,10 +117,10 @@ internal class MoongchiPickerActivity : AppCompatActivity() {
     companion object {
         const val KEY_MOONGCHIPICKER_RESULT = "KEY_MOONGCHIPICKER_RESULT"
 
-        internal fun createIntent(context: Context, dialogInfo: MoongchiPickerParam) =
+        internal fun createIntent(context: Context, moongchiPickerParam: MoongchiPickerParam) =
             Intent(
                 context,
                 MoongchiPickerActivity::class.java
-            ).apply { putExtra(MoongchiPickerDialog.DIALOG_INFO_KEY, dialogInfo) }
+            ).apply { putExtra(MoongchiPickerDialog.DIALOG_INFO_KEY, moongchiPickerParam) }
     }
 }

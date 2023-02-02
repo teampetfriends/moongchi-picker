@@ -1,5 +1,6 @@
 package com.moongchipicker
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -7,13 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.data.Media
 import com.moongchipicker.data.MediaType
-import com.moongchipicker.data.MoongchiPickerParam
+import com.moongchipicker.data.MoongchiPickerDialogParam
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
 import com.moongchipicker.databinding.MoongchiItemSelectedMediaBinding
 import com.moongchipicker.util.MediaLoader
@@ -21,7 +20,7 @@ import com.moongchipicker.util.setResult
 import com.moongchipicker.util.toSafe
 import kotlinx.parcelize.Parcelize
 
-class MoongchiPickerDialog : BottomSheetDialogFragment() {
+internal class MoongchiPickerDialog : BottomSheetDialogFragment() {
 
     sealed interface DialogResult : Parcelable {
         @Parcelize
@@ -39,7 +38,7 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogMoongchiPickerBinding
 
-    private val moongchiPickerParam: MoongchiPickerParam by lazy {
+    private val moongchiPickerParam: MoongchiPickerDialogParam by lazy {
         arguments?.getParcelable(DIALOG_INFO_KEY)!!
     }
 
@@ -66,11 +65,14 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         vm.loadMedia(moongchiPickerParam.mediaType, moongchiPickerParam.maxVisibleMediaCount)
+
+        moongchiPickerParam.selectedUriList.map {
+            Media(it, moongchiPickerParam.mediaType)
+        }.toTypedArray().let(vm::addMediaSelect)
 
         val mediaListAdapter = MediaListAdapter(
             moongchiPickerParam.maxSelectableMediaCount,
@@ -131,7 +133,7 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
     }
 
 
-    fun updateSelectedMediaView(selectedMediaList: List<Media>) {
+    private fun updateSelectedMediaView(selectedMediaList: List<Media>) {
         binding.selectedMediaItems.removeAllViews()
         selectedMediaList.forEach { item ->
             MoongchiItemSelectedMediaBinding.inflate(

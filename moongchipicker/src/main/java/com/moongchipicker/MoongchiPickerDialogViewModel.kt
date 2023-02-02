@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 internal class MoongchiPickerDialogViewModel(
     private val mediaLoader: MediaLoader,
-    private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     private val _selectedMediaList = MutableLiveData<List<Media>>(mutableListOf())
@@ -30,7 +30,8 @@ internal class MoongchiPickerDialogViewModel(
     fun loadMedia(mediaType: MediaType, maxMediaCount: Int) {
         viewModelScope.launch(ioDispatcher) {
             val uriList: List<Uri> = kotlin.runCatching {
-                val fromExternal = mediaLoader.loadMediaFromExternalStorage(mediaType, maxMediaCount)
+                val fromExternal =
+                    mediaLoader.loadMediaFromExternalStorage(mediaType, maxMediaCount)
                 val imageRemain = maxMediaCount - fromExternal.size
                 if (imageRemain > 0) {
                     fromExternal + mediaLoader.loadMediaFromInternalStorage(mediaType, imageRemain)
@@ -45,8 +46,8 @@ internal class MoongchiPickerDialogViewModel(
         }
     }
 
-    fun addMediaSelect(media: Media) {
-        _selectedMediaList.value = _selectedMediaList.value.toSafe() + listOf(media)
+    fun addMediaSelect(vararg media: Media) {
+        _selectedMediaList.value = _selectedMediaList.value.toSafe() + media
     }
 
     fun removeMediaSelect(media: Media) {
