@@ -26,7 +26,7 @@ internal class MoongchiPickerDialogViewModel(
         listOf(Media.empty(), Media.empty()) + it
     }
 
-    fun loadMedia(mediaType: PetMediaType, maxMediaCount: Int) {
+    fun loadMedia(mediaType: MediaType, maxMediaCount: Int) {
         viewModelScope.launch(ioDispatcher) {
             val uriList: List<Uri> = kotlin.runCatching {
                 val fromExternal = mediaLoader.loadMediaFromExternalStorage(mediaType, maxMediaCount)

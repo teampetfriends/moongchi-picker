@@ -2,7 +2,6 @@ package com.moongchipicker
 
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,6 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.data.Media
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
@@ -21,17 +17,12 @@ import com.moongchipicker.util.MediaLoader
 import com.moongchipicker.util.setResult
 import com.moongchipicker.util.toSafe
 import java.io.Serializable
-import java.lang.Exception
 
-
-enum class PetMediaType : Serializable {
-    IMAGE, VIDEO
-}
 
 class MoongchiPickerDialog : BottomSheetDialogFragment() {
 
     data class DialogInfo(
-        val mediaType: PetMediaType,
+        val mediaType: MediaType,
         val maxSelectableMediaCount: Int,
         val maxVisibleMediaCount: Int = 25
     ) : Serializable
@@ -39,6 +30,9 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
     sealed interface DialogResult : Serializable {
         class Success(val mediaUriList: List<Uri>) : DialogResult
         class Failure(val throwable: Throwable) : DialogResult
+        object GetContentFromGallery : DialogResult
+        object TakePicture : DialogResult
+        object TakeVideo : DialogResult
     }
 
     private lateinit var binding: DialogMoongchiPickerBinding
@@ -65,7 +59,7 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = vm
         binding.isImagePicker =
-            dialogInfo.mediaType == PetMediaType.IMAGE
+            dialogInfo.mediaType == MediaType.IMAGE
         binding.allowMultipleSelection = dialogInfo.maxSelectableMediaCount.toSafe() > 1
         return binding.root
     }
@@ -104,12 +98,12 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
                 }
 
                 override fun onSubmit(uri: Uri) {
-                    setResult(REQUEST_MOONGCHI_PICKER, bundleOf(DIALOG_RESULT to DialogResult.Success(listOf(uri))))
+                    setResult(REQUEST_MOONGCHI_PICKER_DIALOG, bundleOf(DIALOG_RESULT to DialogResult.Success(listOf(uri))))
                     dismiss()
                 }
 
                 override fun onFailed(t: Throwable) {
-                    setResult(REQUEST_MOONGCHI_PICKER, bundleOf(DIALOG_RESULT to DialogResult.Failure(t)))
+                    setResult(REQUEST_MOONGCHI_PICKER_DIALOG, bundleOf(DIALOG_RESULT to DialogResult.Failure(t)))
                     dismiss()
                 }
             })
@@ -125,7 +119,7 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
 
         binding.submit.setOnClickListener {
             val selectedMediaUriList: List<Uri> = vm.selectedMediaList.value?.map { it.uri }.toSafe()
-            setResult(REQUEST_MOONGCHI_PICKER, bundleOf(DIALOG_RESULT to DialogResult.Success(selectedMediaUriList)))
+            setResult(REQUEST_MOONGCHI_PICKER_DIALOG, bundleOf(DIALOG_RESULT to DialogResult.Success(selectedMediaUriList)))
             dismiss()
         }
 
