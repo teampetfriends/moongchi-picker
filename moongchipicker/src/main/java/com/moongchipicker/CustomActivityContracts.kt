@@ -8,24 +8,17 @@ import android.os.Parcelable
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.net.toFile
+import com.moongchipicker.data.MoongchiPickerParam
+import com.moongchipicker.data.MoongchiPickerResult
 import com.moongchipicker.util.createImageFilePrivate
 import com.moongchipicker.util.createVideoFilePrivate
 import com.moongchipicker.util.getContentUriFromFile
 import kotlinx.parcelize.Parcelize
 
 
-sealed interface MoongchiPickerResult : Parcelable {
-    @Parcelize
-    class Success(val uriList: List<Uri>) : MoongchiPickerResult
-
-    @Parcelize
-    class Failure(val errorMsg: String?) : MoongchiPickerResult
-}
-
-
 class OpenMoongchiPicker :
-    ActivityResultContract<MoongchiPickerDialog.DialogInfo, MoongchiPickerResult>() {
-    override fun createIntent(context: Context, input: MoongchiPickerDialog.DialogInfo): Intent {
+    ActivityResultContract<MoongchiPickerParam, MoongchiPickerResult>() {
+    override fun createIntent(context: Context, input: MoongchiPickerParam): Intent {
         return MoongchiPickerActivity.createIntent(context, input)
     }
 

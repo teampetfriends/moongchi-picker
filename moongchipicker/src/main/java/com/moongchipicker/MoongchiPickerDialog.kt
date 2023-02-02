@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.moongchipicker.data.Media
 import com.moongchipicker.data.MediaType
+import com.moongchipicker.data.MoongchiPickerParam
 import com.moongchipicker.databinding.DialogMoongchiPickerBinding
 import com.moongchipicker.databinding.MoongchiItemSelectedMediaBinding
 import com.moongchipicker.util.MediaLoader
@@ -20,15 +21,7 @@ import com.moongchipicker.util.setResult
 import com.moongchipicker.util.toSafe
 import kotlinx.parcelize.Parcelize
 
-
 class MoongchiPickerDialog : BottomSheetDialogFragment() {
-
-    @Parcelize
-    data class DialogInfo(
-        val mediaType: MediaType,
-        val maxSelectableMediaCount: Int = 1,
-        val maxVisibleMediaCount: Int = 25
-    ) : Parcelable
 
     sealed interface DialogResult : Parcelable {
         @Parcelize
@@ -46,7 +39,7 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogMoongchiPickerBinding
 
-    private val dialogInfo: DialogInfo by lazy {
+    private val moongchiPickerParam: MoongchiPickerParam by lazy {
         arguments?.getParcelable(DIALOG_INFO_KEY)!!
     }
 
@@ -68,8 +61,8 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = vm
         binding.isImagePicker =
-            dialogInfo.mediaType == MediaType.IMAGE
-        binding.allowMultipleSelection = dialogInfo.maxSelectableMediaCount.toSafe() > 1
+            moongchiPickerParam.mediaType == MediaType.IMAGE
+        binding.allowMultipleSelection = moongchiPickerParam.maxSelectableMediaCount.toSafe() > 1
         return binding.root
     }
 
@@ -77,10 +70,10 @@ class MoongchiPickerDialog : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vm.loadMedia(dialogInfo.mediaType, dialogInfo.maxVisibleMediaCount)
+        vm.loadMedia(moongchiPickerParam.mediaType, moongchiPickerParam.maxVisibleMediaCount)
 
         val mediaListAdapter = MediaListAdapter(
-            dialogInfo.maxSelectableMediaCount,
+            moongchiPickerParam.maxSelectableMediaCount,
             object : MediaItemClickListener {
                 override fun onClickCamera() {
                     setResult(DialogResult.OpenCamera)

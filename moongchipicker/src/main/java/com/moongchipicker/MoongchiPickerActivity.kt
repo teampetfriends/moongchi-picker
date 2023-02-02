@@ -7,15 +7,16 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.moongchipicker.data.MediaType
+import com.moongchipicker.data.MoongchiPickerParam
+import com.moongchipicker.data.MoongchiPickerResult
 import com.moongchipicker.util.*
 
 internal class MoongchiPickerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_moongchi_picker)
 
         val dialogInfo =
-            intent.getParcelableExtra<MoongchiPickerDialog.DialogInfo>(MoongchiPickerDialog.DIALOG_INFO_KEY)
+            intent.getParcelableExtra<MoongchiPickerParam>(MoongchiPickerDialog.DIALOG_INFO_KEY)
                 ?: return
 
         val permissionLauncher = registerPermissionRequestLauncher(
@@ -35,26 +36,26 @@ internal class MoongchiPickerActivity : AppCompatActivity() {
             onSuccess = {
                 setSuccessResult(listOf(it))
             },
-            onFailed = this::setFailureResult
+            onFailed = ::setFailureResult
         )
 
         val getMultipleContentLauncher = registerGetMultipleContentLauncher(
-            onSuccess = this::setSuccessResult,
-            onFailed = this::setFailureResult
+            onSuccess = ::setSuccessResult,
+            onFailed = ::setFailureResult
         )
 
         val takePictureLauncher = registerTakePictureLauncher(
             onSuccess = {
                 setSuccessResult(listOf(it))
             },
-            onFailed = this::setFailureResult
+            onFailed = ::setFailureResult
         )
 
         val takeVideoLauncher = registerTakeVideoLauncher(
             onSuccess = {
                 setSuccessResult(listOf(it))
             },
-            onFailed = this::setFailureResult
+            onFailed = ::setFailureResult
         )
 
 
@@ -111,7 +112,7 @@ internal class MoongchiPickerActivity : AppCompatActivity() {
     companion object {
         const val KEY_MOONGCHIPICKER_RESULT = "KEY_MOONGCHIPICKER_RESULT"
 
-        internal fun createIntent(context: Context, dialogInfo: MoongchiPickerDialog.DialogInfo) =
+        internal fun createIntent(context: Context, dialogInfo: MoongchiPickerParam) =
             Intent(
                 context,
                 MoongchiPickerActivity::class.java

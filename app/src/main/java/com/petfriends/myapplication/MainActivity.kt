@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.moongchipicker.*
 import com.moongchipicker.data.MediaType
+import com.moongchipicker.data.MoongchiPickerParam
+import com.moongchipicker.data.MoongchiPickerResult
 import com.petfriends.myapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             iv.setOnClickListener {
                 moongchiPickerLauncher.launch(
-                    MoongchiPickerDialog.DialogInfo(
+                    MoongchiPickerParam(
                         mediaType = MediaType.IMAGE,
                         maxSelectableMediaCount = 5
                     )

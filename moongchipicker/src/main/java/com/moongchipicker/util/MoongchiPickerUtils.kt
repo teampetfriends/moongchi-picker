@@ -11,11 +11,12 @@ import com.moongchipicker.CustomTakeVideo
 import com.moongchipicker.MoongchiPickerDialog
 import com.moongchipicker.MoongchiPickerDialog.Companion.REQUEST_MOONGCHI_PICKER_DIALOG
 import com.moongchipicker.data.MediaType
+import com.moongchipicker.data.MoongchiPickerParam
 
-internal fun AppCompatActivity.showMoongchiPicker(dialogInfo: MoongchiPickerDialog.DialogInfo) {
+internal fun AppCompatActivity.showMoongchiPicker(moongchiPickerParam: MoongchiPickerParam) {
     MoongchiPickerDialog().apply {
         arguments = bundleOf(
-            MoongchiPickerDialog.DIALOG_INFO_KEY to MoongchiPickerDialog.DialogInfo(
+            MoongchiPickerDialog.DIALOG_INFO_KEY to MoongchiPickerParam(
                 MediaType.IMAGE,
                 5
             )
@@ -44,13 +45,14 @@ internal fun AppCompatActivity.registerGetContentLauncher(
 internal fun AppCompatActivity.registerGetMultipleContentLauncher(
     onSuccess: (List<Uri>) -> Unit,
     onFailed: (Throwable) -> Unit
-) = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { contentUri: List<Uri>? ->
-    if (contentUri == null) {
-        onFailed(GetPictureFailedException())
-    } else {
-        onSuccess(contentUri)
+) =
+    registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { contentUri: List<Uri>? ->
+        if (contentUri == null) {
+            onFailed(GetPictureFailedException())
+        } else {
+            onSuccess(contentUri)
+        }
     }
-}
 
 internal fun ComponentActivity.registerTakePictureLauncher(
     onSuccess: (fileUri: Uri) -> Unit,
