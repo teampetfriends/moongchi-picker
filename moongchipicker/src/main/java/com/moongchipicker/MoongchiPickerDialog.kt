@@ -44,7 +44,7 @@ internal class MoongchiPickerDialog : BottomSheetDialogFragment() {
 
 
     private val vm: MoongchiPickerDialogViewModel by lazy {
-        ViewModelProvider(this, object : ViewModelProvider.Factory {
+        ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return MoongchiPickerDialogViewModel(MediaLoader(requireContext())) as T
             }
@@ -96,6 +96,7 @@ internal class MoongchiPickerDialog : BottomSheetDialogFragment() {
                 }
 
                 override fun isMediaSelected(media: Media): Boolean {
+                    // contentResolver.query 를 통해 얻어온 url와 getContent 로 얻어온 url 의 형태가 달라버림.
                     return vm.selectedMediaList.value.toSafe().contains(media)
                 }
 

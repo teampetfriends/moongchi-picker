@@ -21,10 +21,7 @@ internal fun AppCompatActivity.showMoongchiPicker(moongchiPickerParam: MoongchiP
     moongchiPickerDialog?.dismiss()
     MoongchiPickerDialog().apply {
         arguments = bundleOf(
-            MoongchiPickerDialog.DIALOG_INFO_KEY to MoongchiPickerDialogParam(
-                MediaType.IMAGE,
-                5
-            )
+            MoongchiPickerDialog.DIALOG_INFO_KEY to moongchiPickerParam
         )
     }.show(supportFragmentManager, fragmentTag)
 }
